@@ -140,7 +140,10 @@ const TIER = { big:{th:1,r:13}, premium:{th:1.8,r:11}, business:{th:3.6,r:10}, s
 const NAME_AT = 2.6;
 
 const svg = d3.select("#map");
+// weicher Blur-Filter für den Schlagschatten der Landmasse (Cut-out-Tiefe)
+svg.append("defs").html('<filter id="softblur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="6"/></filter>');
 const gMain = svg.append("g");
+const gShadow = gMain.append("g").attr("transform","translate(0,9)").attr("filter","url(#softblur)");
 const gStates = gMain.append("g");
 const gLabels = gMain.append("g");
 const gMk = gMain.append("g");
@@ -157,6 +160,9 @@ function build(){
   dims();
   projection = d3.geoMercator().fitExtent([[24,18],[W-24,H-18]], statesFC);
   path = d3.geoPath(projection);
+
+  gShadow.selectAll("path").data(statesFC.features).join("path")
+    .attr("class","state-shadow").attr("d", path);
 
   gStates.selectAll("path").data(statesFC.features).join("path")
     .attr("class","state").attr("d", path)
@@ -203,6 +209,11 @@ d3.json("de-states.geojson").then(fc=>{
   statesFC = fc;
   svg.call(zoom);
   build();
+  // Einflug: aus leichtem Zoom sanft einschweben + einblenden
+  const start = d3.zoomIdentity.translate(W/2,H/2).scale(1.09).translate(-W/2,-H/2);
+  svg.call(zoom.transform, start);
+  gMain.attr("opacity",0).transition().duration(850).ease(d3.easeCubicOut).attr("opacity",1);
+  svg.transition().delay(140).duration(1250).ease(d3.easeCubicOut).call(zoom.transform, d3.zoomIdentity);
   let rt; window.addEventListener("resize", ()=>{ clearTimeout(rt); rt=setTimeout(build,200); });
 }).catch(err=>{
   document.querySelector(".map-wrap").insertAdjacentHTML("beforeend",

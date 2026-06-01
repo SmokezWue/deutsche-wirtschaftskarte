@@ -51,17 +51,22 @@ header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(140%) blur(8px)
   radial-gradient(80% 80% at 70% 100%, rgba(124,97,31,0.05), transparent 60%)}
 #map{width:100%;height:100%;display:block;cursor:grab}
 #map.grabbing{cursor:grabbing}
-.state{fill:var(--paper-2);stroke:var(--ink);stroke-width:1;vector-effect:non-scaling-stroke;transition:fill .18s,stroke-width .12s}
-.state:hover{fill:#E8E0CB;stroke-width:2.8}
-.state.sel{fill:#E8E0CB}
+.state{fill:#E4D9C0;stroke:rgba(124,97,31,0.32);stroke-width:0.8;vector-effect:non-scaling-stroke;transition:fill .22s ease,stroke-width .14s,filter .22s}
+.state:hover{fill:#F1EAD7;stroke:var(--gold-deep);stroke-width:2.6;filter:brightness(1.02)}
+.state.sel{fill:#EEE6D0}
+.state-shadow{fill:rgba(22,20,15,0.22);stroke:none;pointer-events:none}
 .state-label{font-family:'Space Mono',monospace;fill:var(--ink-faint);text-anchor:middle;pointer-events:none;letter-spacing:0.04em;font-size:11px;opacity:0;transition:opacity .2s}
 .state-label.show{opacity:.7}
 
-.mk{pointer-events:auto;cursor:pointer;opacity:0;transition:opacity .35s}
+.mk{pointer-events:auto;cursor:pointer;opacity:0;transition:opacity .45s cubic-bezier(.2,.7,.2,1)}
 .mk.on{opacity:1}
 .mk-halo{fill:var(--gold);opacity:0;transform-box:fill-box;transform-origin:center}
-.mk.t-big .mk-halo{opacity:.16;animation:pulse 3.6s ease-in-out infinite}
-.mk-ring{fill:var(--paper);stroke-width:2.5;vector-effect:non-scaling-stroke}
+.mk.t-big .mk-halo{opacity:.18;animation:pulse 3.4s ease-in-out infinite}
+.mk.t-premium .mk-halo{fill:var(--t-premium)}
+.mk:hover .mk-halo{opacity:.28;animation:pulse 2s ease-in-out infinite}
+.mk-ring{fill:var(--paper);stroke-width:2.5;vector-effect:non-scaling-stroke;filter:drop-shadow(0 1.5px 2.5px rgba(22,20,15,0.22));transition:stroke-width .15s}
+.mk:hover .mk-ring{stroke-width:4}
+.mk:hover .mk-nm{opacity:1}
 .mk.t-big .mk-ring{stroke:var(--t-big);stroke-width:3.5;vector-effect:non-scaling-stroke}
 .mk.t-premium .mk-ring{stroke:var(--t-premium)}
 .mk.t-business .mk-ring{stroke:var(--t-business)}
