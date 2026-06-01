@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aufnahme beantragen — Deutsche Wirtschaftskarte</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="index.html">Deutsche&nbsp;Wirtschaftskarte <span class="tag">Founding&nbsp;100 · 2026</span></a>
+    <nav class="nav-cta">
+      <div class="tabs">
+        <a href="index.html">Karte</a>
+        <a href="prinzip.html">Prinzip</a>
+        <a href="founding.html">Founding 100</a>
+        <a href="foerderung.html">Förderung</a>
+        <a href="pakete.html">Pakete</a>
+      </div>
+      <a href="aufnahme.html" class="btn btn-primary active">Aufnahme beantragen <span class="arrow">→</span></a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap page">
+    <div class="apply-grid">
+      <div>
+        <span class="eyebrow">Aufnahme beantragen</span>
+        <h1 style="font-size:clamp(32px,4.5vw,52px);line-height:1.02;margin:14px 0 18px">Gehört euer Unternehmen auf die Karte?</h1>
+        <p style="color:var(--ink-soft);font-size:18px;max-width:26em">Wir kuratieren gerade den Gründungsjahrgang 2026. Stellt euren Aufnahmeantrag — unverbindlich. Wir melden uns innerhalb von zwei Werktagen.</p>
+        <div style="margin-top:30px;border-top:1px solid var(--line);padding-top:24px">
+          <div class="serif" style="font-size:40px;font-weight:700;color:var(--gold-deep);line-height:1">100</div>
+          <div class="mono" style="font-size:13px;color:var(--ink-faint);margin-top:4px;text-transform:uppercase;letter-spacing:.1em">Plätze. Mehr nicht.</div>
+        </div>
+      </div>
+
+      <div>
+        <form id="applyForm" novalidate>
+          <div class="row2">
+            <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" type="text" required placeholder="Vor- und Nachname"></div>
+            <div class="field"><label for="f-role">Rolle</label><input id="f-role" name="role" type="text" placeholder="z. B. Geschäftsführung"></div>
+          </div>
+          <div class="field"><label for="f-company">Unternehmen</label><input id="f-company" name="company" type="text" required placeholder="Firmenname"></div>
+          <div class="row2">
+            <div class="field"><label for="f-region">Region / Bundesland</label><input id="f-region" name="region" type="text" placeholder="z. B. Bayern"></div>
+            <div class="field"><label for="f-pkg">Interesse an</label>
+              <select id="f-pkg" name="package"><option>Noch unentschieden</option><option>Starter</option><option>Business</option><option>Premium</option><option>Partner / Regionaledition</option></select>
+            </div>
+          </div>
+          <div class="field"><label for="f-email">E-Mail</label><input id="f-email" name="email" type="email" required placeholder="name@unternehmen.de"></div>
+          <button type="submit" class="btn btn-primary">Aufnahme beantragen <span class="arrow">→</span></button>
+          <p class="form-note">Unverbindlich · keine Zahlung · Antwort in 2 Werktagen</p>
+        </form>
+        <div class="success" id="success">
+          <h3>Antrag eingegangen.</h3>
+          <p>Danke — wir prüfen die Passung und melden uns innerhalb von zwei Werktagen bei euch.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="ft">
+      <div class="brand serif" style="font-size:20px;font-weight:700">Deutsche Wirtschaftskarte</div>
+      <div class="links">
+        <a href="index.html">Karte</a><a href="prinzip.html">Prinzip</a><a href="founding.html">Founding 100</a><a href="foerderung.html">Förderung</a><a href="pakete.html">Pakete</a><a href="aufnahme.html">Aufnahme</a>
+      </div>
+    </div>
+    <div class="links" style="margin-top:22px;font-size:12px"><a href="impressum.html">Impressum</a><a href="datenschutz.html">Datenschutz</a></div>
+    <p class="disclaimer">Pilot-/Vorabseite (Validierungsphase). Mit dem Absenden willigst du ein, dass wir dich zwecks Aufnahme kontaktieren. Es entsteht keine Zahlungspflicht.</p>
+  </div>
+</footer>
+
+<script>
+/* Formspree-Anbindung: formspree.io → kostenloses Konto → New Form → ID hier eintragen.
+   Solange "DEINE_FORM_ID" steht, läuft nur die Demo-Erfolgsmeldung. */
+const FORM_ID = "DEINE_FORM_ID";
+const FORM_ENDPOINT = "https://formspree.io/f/" + FORM_ID;
+const form = document.getElementById('applyForm');
+const submitBtn = form.querySelector('button[type="submit"]');
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const name=form.name.value.trim(), company=form.company.value.trim(), email=form.email.value.trim();
+  if(!name||!company||!/.+@.+\..+/.test(email)){ alert('Bitte Name, Unternehmen und eine gültige E-Mail angeben.'); return; }
+  const data=Object.fromEntries(new FormData(form)); data._subject="Aufnahme-Antrag: "+company;
+  const ok=()=>{ form.style.display='none'; document.getElementById('success').classList.add('show'); };
+  if(FORM_ID==="DEINE_FORM_ID"){ console.log('LEAD (Demo):',data); ok(); return; }
+  submitBtn.disabled=true; const orig=submitBtn.innerHTML; submitBtn.innerHTML='Wird gesendet …';
+  try{
+    const res=await fetch(FORM_ENDPOINT,{method:'POST',headers:{'Accept':'application/json','Content-Type':'application/json'},body:JSON.stringify(data)});
+    if(res.ok) ok(); else throw new Error('HTTP '+res.status);
+  }catch(err){ console.error(err); submitBtn.disabled=false; submitBtn.innerHTML=orig; alert('Senden hat nicht geklappt. Bitte später erneut versuchen oder direkt per E-Mail melden.'); }
+});
+</script>
+</body>
+</html>

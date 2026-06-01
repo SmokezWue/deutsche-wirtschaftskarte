@@ -3,976 +3,216 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deutsche Wirtschaftskarte — Founding 100</title>
+<title>Deutsche Wirtschaftskarte — Wir sind die deutsche Wirtschaft</title>
+<meta name="description" content="Die kuratierte interaktive Karte der deutschen Wirtschaft. Unternehmen, die für ihre Region stehen — als Arbeitgeber, Ausbildungsbetrieb und Innovationskraft.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --paper:#F4F0E7;
-    --paper-2:#EDE7DA;
-    --ink:#16140F;
-    --ink-soft:#4A4639;
-    --ink-faint:#8C846F;
-    --gold:#9A7B36;
-    --gold-deep:#7C611F;
-    --gold-soft:#C7A85B;
-    --line:rgba(22,20,15,0.14);
-    --line-soft:rgba(22,20,15,0.08);
-    --maxw:1200px;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  body{
-    background:var(--paper);
-    color:var(--ink);
-    font-family:'Hanken Grotesk',system-ui,sans-serif;
-    font-size:17px;line-height:1.6;
-    -webkit-font-smoothing:antialiased;
-    overflow-x:hidden;
-  }
-  /* subtle paper texture */
-  body::before{
-    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-    background:
-      radial-gradient(circle at 20% 10%, rgba(255,255,255,0.5), transparent 45%),
-      radial-gradient(circle at 85% 90%, rgba(124,97,31,0.05), transparent 50%);
-    mix-blend-mode:normal;
-  }
-  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;position:relative;z-index:1}
-  h1,h2,h3,.serif{font-family:'Bricolage Grotesque',sans-serif;font-weight:500;letter-spacing:-0.01em}
-  .mono{font-family:'Space Mono',monospace}
-  a{color:inherit;text-decoration:none}
-  .eyebrow{
-    font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.22em;
-    text-transform:uppercase;color:var(--gold-deep);
-  }
-
-  /* ---------- top bar ---------- */
-  header{
-    position:sticky;top:0;z-index:50;
-    backdrop-filter:saturate(140%) blur(8px);
-    background:rgba(244,240,231,0.82);
-    border-bottom:1px solid var(--line-soft);
-  }
-  .nav{display:flex;align-items:center;justify-content:space-between;height:70px}
-  .brand{display:flex;align-items:baseline;gap:12px;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:19px;letter-spacing:-0.01em}
-  .brand .tag{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.18em;color:var(--ink-faint);text-transform:uppercase;font-weight:400}
-  .nav-cta{display:flex;align-items:center;gap:22px}
-  .nav-links{display:flex;gap:26px;font-size:14px;color:var(--ink-soft)}
-  .nav-links a:hover{color:var(--gold-deep)}
-  @media(max-width:820px){.nav-links{display:none}}
-
-  .btn{
-    display:inline-flex;align-items:center;gap:10px;cursor:pointer;
-    font-weight:600;font-size:15px;border:none;font-family:inherit;
-    padding:13px 22px;border-radius:2px;transition:.18s ease;
-  }
-  .btn-primary{background:var(--ink);color:var(--paper)}
-  .btn-primary:hover{background:var(--gold-deep)}
-  .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line);padding:12px 21px}
-  .btn-ghost:hover{border-color:var(--gold-deep);color:var(--gold-deep)}
-  .btn .arrow{transition:transform .18s ease}
-  .btn:hover .arrow{transform:translateX(3px)}
-
-  /* ---------- hero ---------- */
-  .hero{padding:70px 0 40px;position:relative}
-  .hero-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:54px;align-items:center}
-  @media(max-width:920px){.hero-grid{grid-template-columns:1fr;gap:40px}}
-  .hero h1{
-    font-size:clamp(44px,6vw,82px);line-height:0.98;font-weight:500;
-    margin:22px 0 24px;letter-spacing:-0.025em;
-  }
-  .hero h1 em{font-style:normal;font-weight:700;color:var(--gold-deep)}
-  .hero .lede{font-size:19px;color:var(--ink-soft);max-width:30em;margin-bottom:30px}
-  .hero-actions{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
-  .scarcity{
-    margin-top:34px;padding-top:26px;border-top:1px solid var(--line);
-    display:flex;gap:30px;align-items:center;flex-wrap:wrap;
-  }
-  .scarcity .num{font-family:'Bricolage Grotesque',sans-serif;font-size:40px;font-weight:600;line-height:1;color:var(--ink)}
-  .scarcity .num span{color:var(--gold-deep)}
-  .scarcity .lbl{font-size:13px;color:var(--ink-faint);font-family:'Space Mono',monospace;letter-spacing:0.05em;text-transform:uppercase;max-width:14em}
-  .bar{height:5px;background:var(--paper-2);border-radius:3px;overflow:hidden;width:200px;margin-top:9px;border:1px solid var(--line-soft)}
-  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-deep));width:0;transition:width 1.6s cubic-bezier(.2,.7,.2,1)}
-
-  /* ---------- map ---------- */
-  .map-stage{position:relative;aspect-ratio:1/1;width:100%;max-width:440px;margin:0 auto}
-  .de-map{width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 16px 28px rgba(22,20,15,0.12))}
-  .pins{position:absolute;inset:0;pointer-events:none}
-  .pin{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;cursor:default}
-  .pin .dot{width:9px;height:9px;border-radius:50%;background:var(--ink-faint);opacity:.5;transition:.3s ease;position:relative;z-index:2}
-  .pin.active .dot{width:13px;height:13px;background:var(--gold-deep);opacity:1;box-shadow:0 1px 5px rgba(124,97,31,0.55)}
-  .pin .halo{position:absolute;left:50%;top:50%;width:13px;height:13px;border-radius:50%;background:var(--gold);z-index:1;transform:translate(-50%,-50%);animation:pulse 3.4s ease-in-out infinite}
-  .pin .lbl{
-    position:absolute;bottom:150%;left:50%;transform:translateX(-50%);white-space:nowrap;
-    font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:var(--ink);
-    background:var(--paper);padding:2px 8px;border:1px solid var(--line);border-radius:2px;
-    opacity:0;transition:.18s ease;pointer-events:none;
-  }
-  .pin:hover .lbl{opacity:1}
-  .pin:hover .dot{transform:scale(1.3)}
-  @keyframes pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.4}50%{transform:translate(-50%,-50%) scale(2.6);opacity:0}}
-  .map-cap{
-    text-align:center;margin-top:18px;font-family:'Space Mono',monospace;
-    font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-faint);
-  }
-  .map-legend{display:flex;gap:20px;justify-content:center;margin-top:10px;font-size:12px;color:var(--ink-soft)}
-  .map-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
-
-  /* ---------- manifest strip ---------- */
-  .manifest{border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:30px;background:var(--paper-2)}
-  .manifest .wrap{padding-top:46px;padding-bottom:46px}
-  .manifest p{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(22px,3vw,30px);line-height:1.4;font-weight:400;max-width:26em}
-  .manifest .strike{color:var(--ink-faint);text-decoration:line-through;text-decoration-color:var(--gold);text-decoration-thickness:2px}
-  .manifest em{font-style:italic;color:var(--gold-deep)}
-
-  /* ---------- section frame ---------- */
-  section{padding:90px 0;position:relative}
-  .sec-head{max-width:38em;margin-bottom:54px}
-  .sec-head h2{font-size:clamp(30px,4vw,46px);line-height:1.05;margin:14px 0 16px}
-  .sec-head p{color:var(--ink-soft);font-size:18px}
-
-  /* principle cols */
-  .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
-  @media(max-width:820px){.cols{grid-template-columns:1fr}}
-  .col{background:var(--paper);padding:40px 34px}
-  .col .idx{font-family:'Space Mono',monospace;font-size:12px;color:var(--gold-deep);letter-spacing:0.1em}
-  .col h3{font-size:25px;margin:18px 0 12px;font-weight:600}
-  .col p{color:var(--ink-soft);font-size:16px}
-
-  /* ---------- founding offer ---------- */
-  .founding{background:var(--ink);color:var(--paper)}
-  .founding .eyebrow{color:var(--gold-soft)}
-  .founding h2{color:var(--paper)}
-  .founding .sec-head p{color:rgba(244,240,231,0.72)}
-  .founding-grid{display:grid;grid-template-columns:1.2fr 0.8fr;gap:60px;align-items:start}
-  @media(max-width:920px){.founding-grid{grid-template-columns:1fr;gap:46px}}
-  .benefits{list-style:none;display:grid;gap:2px}
-  .benefits li{display:flex;gap:18px;padding:18px 0;border-bottom:1px solid rgba(244,240,231,0.12);align-items:baseline}
-  .benefits .k{font-family:'Space Mono',monospace;color:var(--gold-soft);font-size:13px;min-width:34px}
-  .benefits .v{color:rgba(244,240,231,0.92);font-size:16.5px}
-  .benefits .v b{color:var(--paper);font-weight:600}
-
-  /* seal */
-  .seal-card{
-    border:1px solid rgba(244,240,231,0.2);padding:38px 32px;text-align:center;
-    background:radial-gradient(circle at 50% 30%, rgba(199,168,91,0.10), transparent 70%);
-  }
-  .seal{width:188px;height:188px;margin:0 auto 26px;position:relative}
-  .seal svg{width:100%;height:100%;animation:spin 60s linear infinite}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .seal .core{
-    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    font-family:'Bricolage Grotesque',sans-serif;
-  }
-  .seal .core .yr{font-size:38px;font-weight:600;color:var(--gold-soft);line-height:1}
-  .seal .core .t{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(244,240,231,0.65);font-family:'Space Mono',monospace;margin-top:6px}
-  .seal-card .pl{font-size:14px;color:rgba(244,240,231,0.7);margin-top:6px}
-  .seal-card .lock{margin-top:22px;padding-top:20px;border-top:1px solid rgba(244,240,231,0.14);font-size:14px;color:rgba(244,240,231,0.85)}
-  .seal-card .lock b{color:var(--gold-soft)}
-
-  /* founding scarcity wall */
-  .wall{margin-top:56px;border-top:1px solid rgba(244,240,231,0.14);padding-top:40px}
-  .wall .top{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:12px;margin-bottom:22px}
-  .wall .top .mono{color:var(--gold-soft);font-size:13px;letter-spacing:0.08em}
-  .slots{display:grid;grid-template-columns:repeat(10,1fr);gap:8px}
-  @media(max-width:760px){.slots{grid-template-columns:repeat(5,1fr)}}
-  .slot{
-    aspect-ratio:1;border:1px solid rgba(244,240,231,0.16);border-radius:2px;
-    display:flex;align-items:center;justify-content:center;
-    font-family:'Space Mono',monospace;font-size:10px;color:rgba(244,240,231,0.3);
-    transition:.3s ease;
-  }
-  .slot.taken{background:rgba(199,168,91,0.14);border-color:var(--gold);color:var(--gold-soft)}
-  .slot.taken::after{content:"✦"}
-  .slot.free::after{content:"frei"}
-
-  /* ---------- stipend ---------- */
-  .stipend-grid{display:grid;grid-template-columns:0.9fr 1.1fr;gap:60px;align-items:center}
-  @media(max-width:920px){.stipend-grid{grid-template-columns:1fr;gap:40px}}
-  .counter-box{border:1px solid var(--line);padding:44px 38px;background:var(--paper-2)}
-  .counter-box .amt{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(46px,7vw,72px);font-weight:600;line-height:1;color:var(--gold-deep)}
-  .counter-box .amt small{font-size:.4em;color:var(--ink-faint);font-weight:400}
-  .counter-box .sub{margin-top:12px;color:var(--ink-soft);font-size:15px;font-family:'Space Mono',monospace;letter-spacing:0.04em}
-  .counter-box .note{margin-top:24px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-faint)}
-  .stipend ul{list-style:none;display:grid;gap:16px;margin-top:8px}
-  .stipend ul li{padding-left:26px;position:relative;color:var(--ink-soft)}
-  .stipend ul li::before{content:"→";position:absolute;left:0;color:var(--gold-deep);font-weight:700}
-  .stipend ul li b{color:var(--ink)}
-
-  /* ---------- packages ---------- */
-  .pkgs{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
-  @media(max-width:920px){.pkgs{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:560px){.pkgs{grid-template-columns:1fr}}
-  .pkg{background:var(--paper);padding:34px 28px;display:flex;flex-direction:column}
-  .pkg.feat{background:var(--paper-2);position:relative}
-  .pkg.feat::before{content:"Empfohlen";position:absolute;top:-1px;right:-1px;background:var(--gold-deep);color:var(--paper);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;padding:5px 12px}
-  .pkg .nm{font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:600}
-  .pkg .pr{font-family:'Space Mono',monospace;font-size:15px;color:var(--gold-deep);margin:10px 0 4px}
-  .pkg .pr small{color:var(--ink-faint)}
-  .pkg .who{font-size:13px;color:var(--ink-faint);min-height:42px;margin-bottom:18px;border-bottom:1px solid var(--line-soft);padding-bottom:16px}
-  .pkg ul{list-style:none;display:grid;gap:9px;font-size:14px;color:var(--ink-soft);flex:1}
-  .pkg ul li{padding-left:18px;position:relative}
-  .pkg ul li::before{content:"·";position:absolute;left:4px;color:var(--gold-deep);font-weight:700}
-  .pkg-note{margin-top:24px;font-size:13.5px;color:var(--ink-faint);font-style:italic}
-
-  /* ---------- steps ---------- */
-  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:40px}
-  @media(max-width:820px){.steps{grid-template-columns:1fr;gap:28px}}
-  .step{border-top:2px solid var(--ink);padding-top:22px}
-  .step .n{font-family:'Bricolage Grotesque',sans-serif;font-size:46px;font-weight:600;color:var(--gold-deep);line-height:1}
-  .step h3{font-size:20px;margin:12px 0 8px;font-weight:600}
-  .step p{color:var(--ink-soft);font-size:15px}
-
-  /* ---------- faq ---------- */
-  .faq{border-top:1px solid var(--line)}
-  .faq details{border-bottom:1px solid var(--line);padding:6px 0}
-  .faq summary{
-    cursor:pointer;list-style:none;padding:22px 0;font-family:'Bricolage Grotesque',sans-serif;
-    font-size:21px;font-weight:500;display:flex;justify-content:space-between;gap:20px;align-items:center;
-  }
-  .faq summary::-webkit-details-marker{display:none}
-  .faq summary .pm{font-family:'Space Mono',monospace;color:var(--gold-deep);transition:.2s ease;flex-shrink:0}
-  .faq details[open] summary .pm{transform:rotate(45deg)}
-  .faq .ans{padding:0 0 24px;color:var(--ink-soft);max-width:48em}
-
-  /* ---------- final CTA ---------- */
-  .apply{background:var(--paper-2);border-top:1px solid var(--line)}
-  .apply-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
-  @media(max-width:920px){.apply-grid{grid-template-columns:1fr;gap:40px}}
-  .apply h2{font-size:clamp(32px,4.5vw,52px);line-height:1.02;margin-bottom:18px}
-  .apply .lede{color:var(--ink-soft);font-size:18px;max-width:26em}
-  form{display:grid;gap:16px}
-  .field{display:grid;gap:7px}
-  .field label{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-faint)}
-  .field input,.field select{
-    font-family:inherit;font-size:16px;padding:14px 16px;border:1px solid var(--line);
-    background:var(--paper);color:var(--ink);border-radius:2px;width:100%;
-  }
-  .field input:focus,.field select:focus{outline:none;border-color:var(--gold-deep)}
-  .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  @media(max-width:560px){.row2{grid-template-columns:1fr}}
-  form .btn-primary{justify-content:center;margin-top:6px}
-  .form-note{font-size:12.5px;color:var(--ink-faint);text-align:center}
-  .success{display:none;border:1px solid var(--gold);background:rgba(199,168,91,0.1);padding:40px 34px;text-align:center}
-  .success.show{display:block}
-  .success h3{font-size:28px;margin-bottom:10px;color:var(--gold-deep)}
-  .success p{color:var(--ink-soft)}
-
-  /* ---------- footer ---------- */
-  footer{background:var(--ink);color:rgba(244,240,231,0.6);padding:54px 0 40px;font-size:13.5px}
-  footer .ft{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;align-items:flex-start}
-  footer .brand{color:var(--paper)}
-  footer a:hover{color:var(--gold-soft)}
-  footer .links{display:flex;gap:24px;flex-wrap:wrap}
-  .disclaimer{margin-top:34px;padding-top:24px;border-top:1px solid rgba(244,240,231,0.12);font-size:12px;color:rgba(244,240,231,0.42);max-width:60em;line-height:1.7}
-
-  /* Reveal nur wenn JS aktiv UND Animation gewünscht — sonst Inhalt immer sichtbar */
-  .js .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
-  .js .reveal.in{opacity:1;transform:none}
-  @media (prefers-reduced-motion:reduce){.js .reveal{opacity:1;transform:none;transition:none}}
-</style>
-<script>document.documentElement.className+=' js';</script>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<!-- ============ HEADER ============ -->
 <header>
   <div class="wrap nav">
-    <div class="brand">Deutsche&nbsp;Wirtschaftskarte <span class="tag">Founding&nbsp;100 · 2026</span></div>
+    <a class="brand" href="index.html">Deutsche&nbsp;Wirtschaftskarte <span class="tag">Founding&nbsp;100 · 2026</span></a>
     <nav class="nav-cta">
-      <div class="nav-links">
-        <a href="#prinzip">Prinzip</a>
-        <a href="#founding">Founding 100</a>
-        <a href="#stipendien">Förderung</a>
-        <a href="#pakete">Pakete</a>
+      <div class="tabs">
+        <a href="index.html" class="active">Karte</a>
+        <a href="prinzip.html">Prinzip</a>
+        <a href="founding.html">Founding 100</a>
+        <a href="foerderung.html">Förderung</a>
+        <a href="pakete.html">Pakete</a>
       </div>
-      <a href="#apply" class="btn btn-primary">Aufnahme beantragen <span class="arrow">→</span></a>
+      <a href="aufnahme.html" class="btn btn-primary">Aufnahme beantragen <span class="arrow">→</span></a>
     </nav>
   </div>
 </header>
 
-<!-- ============ HERO ============ -->
-<div class="hero">
-  <div class="wrap hero-grid">
-    <div>
-      <span class="eyebrow">Gründungsjahrgang 2026 · Kuratierte Aufnahme</span>
-      <h1>Wir sind die<br>deutsche <em>Wirtschaft.</em></h1>
-      <p class="lede">Die kuratierte Karte der Unternehmen, die für ihre Region stehen — als Arbeitgeber, Ausbildungsbetrieb und Innovationskraft. Kein Verzeichnis. Eine Auszeichnung mit Karte.</p>
-      <div class="hero-actions">
-        <a href="#apply" class="btn btn-primary">Aufnahme beantragen <span class="arrow">→</span></a>
-        <a href="#prinzip" class="btn btn-ghost">Wie es funktioniert</a>
-      </div>
-      <div class="scarcity">
-        <div>
-          <div class="num" id="heroNum"><span data-count="100">0</span> / 100</div>
-          <div class="bar"><i id="heroBar"></i></div>
-        </div>
-        <div class="lbl">Gründungsplätze.<br>Danach geschlossen.</div>
-      </div>
-    </div>
-
-    <!-- INTERAKTIVE KARTE (stilisierte Andeutung) -->
-    <div>
-      <div class="map-stage">
-        <!-- Deutschland-Kontur inline (Quelle: mapsicon, CC0) -> Seite ist eine eigenständige Datei -->
-        <svg class="de-map" role="img" aria-label="Karte Deutschland" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" preserveAspectRatio="xMidYMid meet">
-        <g transform="translate(0.000000,1024.000000) scale(0.100000,-0.100000)" fill="#E2D6BD" stroke="none">
-        <path d="M3047 10193 c-74 -128 -89 -173 -90 -273 -2 -79 1 -95 13 -95 12 0
-16 16 18 72 4 89 15 102 72 83 34 -11 45 -11 77 3 55 23 143 33 143 15 0 -7
-18 -35 40 -63 22 -27 40 -55 40 -62 0 -6 18 -33 40 -60 21 -26 51 -62 65 -79
-14 -18 25 -44 25 -58 0 -22 4 -26 28 -26 17 0 37 -9 49 -22 22 -25 47 -68 41
--73 -2 -1 -29 -10 -61 -19 -45 -13 -57 -21 -53 -32 3 -9 6 -20 6 -25 0 -5 20
--9 44 -9 33 0 52 7 81 30 l39 31 13 -32 c16 -40 17 -39 -5 -39 -10 0 -39 -13
--65 -30 -46 -29 -52 -30 -166 -30 -104 0 -120 -2 -136 -20 -17 -18 -16 -19 11
--26 42 -10 46 -14 33 -30 -6 -8 -26 -14 -45 -14 -25 0 -34 -5 -40 -22 -5 -18
-2 -29 37 -59 l44 -37 29 21 c17 12 49 22 75 24 25 1 69 4 96 6 28 1 56 7 64
-11 10 7 12 5 6 -5 -18 -31 -38 -48 -64 -54 -21 -5 -29 -16 -43 -58 -16 -50
--15 -53 5 -82 11 -16 21 -31 22 -33 1 -1 28 1 60 6 l57 9 15 -32 c11 -23 14
--46 9 -79 -8 -50 -18 -55 -71 -32 -32 13 -75 10 -75 -6 0 -19 50 -94 85 -128
-32 -31 43 -35 88 -36 139 -1 220 -16 286 -52 58 -32 66 -41 92 -98 24 -53 36
--67 72 -85 50 -26 53 -30 61 -80 5 -32 13 -42 59 -68 41 -24 169 -61 210 -61
-4 0 7 -10 7 -21 0 -18 -4 -20 -27 -15 -16 3 -53 10 -83 15 -30 5 -81 21 -112
-35 -47 21 -61 33 -79 68 -12 24 -50 75 -84 113 -34 39 -74 87 -90 108 -57 77
--167 107 -265 72 -46 -16 -176 -19 -268 -6 -40 6 -61 15 -87 41 -31 30 -36 32
--62 21 -56 -23 -79 -55 -127 -172 -25 -63 -46 -119 -46 -124 0 -5 17 -38 39
--74 55 -94 57 -106 27 -141 -15 -18 -27 -49 -31 -78 -4 -26 -9 -56 -12 -67 -6
--20 -6 -20 -14 0 -15 39 -9 103 12 140 12 19 19 41 16 48 -3 8 -32 23 -64 35
--33 12 -70 33 -83 47 -17 18 -34 25 -60 25 -31 0 -38 -5 -52 -33 -8 -17 -19
--47 -22 -65 -8 -32 -7 -32 32 -32 43 0 52 -10 52 -59 0 -18 -12 -38 -33 -59
--43 -42 -78 -42 -107 -2 -14 20 -30 30 -48 30 -37 1 -62 22 -62 53 0 20 6 27
-29 32 16 3 36 14 45 24 15 16 14 22 -14 77 -24 48 -36 62 -65 73 -33 11 -36
-15 -30 41 5 25 2 31 -23 44 -24 13 -49 13 -158 5 -71 -5 -169 -19 -217 -29
--63 -14 -94 -17 -107 -10 -26 14 -81 12 -179 -5 -89 -15 -128 -36 -201 -102
--41 -36 -49 -53 -27 -53 6 0 18 -4 26 -9 11 -7 10 -14 -4 -39 -16 -26 -21 -28
--36 -19 -15 9 -22 8 -33 -3 -17 -19 -56 -136 -56 -171 0 -42 20 -51 112 -49
-147 4 142 8 108 -87 -11 -32 -20 -70 -20 -86 0 -17 -5 -47 -12 -69 -9 -29 -9
--41 0 -50 8 -8 12 -49 12 -114 l0 -101 -54 -84 c-47 -73 -58 -100 -82 -205
-l-29 -122 -53 -5 c-30 -3 -65 -2 -79 4 -43 16 -113 11 -149 -12 -38 -23 -44
--51 -16 -82 9 -11 12 -17 6 -14 -7 4 -22 -1 -35 -12 -21 -17 -22 -21 -11 -59
-9 -29 23 -47 48 -62 31 -20 46 -22 142 -19 l107 4 42 -45 42 -46 -30 -49 c-27
--45 -29 -56 -25 -108 6 -56 4 -60 -25 -85 -17 -15 -72 -50 -122 -77 -72 -39
--96 -58 -109 -85 -24 -50 -22 -66 17 -117 19 -25 35 -49 35 -52 0 -15 -155
--62 -282 -87 -131 -25 -138 -28 -138 -50 0 -13 -3 -24 -6 -24 -3 0 -54 21
--112 47 -80 36 -107 44 -110 34 -9 -28 -40 -48 -83 -55 -24 -4 -60 -11 -80
--16 l-36 -10 14 -62 c10 -44 25 -75 54 -109 29 -35 39 -56 39 -82 0 -29 7 -41
-43 -70 97 -80 93 -73 101 -185 l8 -101 -82 -121 c-45 -67 -80 -123 -78 -125 2
--2 23 0 48 5 25 5 46 7 48 5 2 -2 -8 -26 -22 -53 -22 -43 -36 -56 -101 -92
--63 -35 -82 -41 -111 -36 l-34 7 0 -54 0 -55 63 -17 c57 -15 66 -21 90 -61 15
--25 27 -47 27 -50 0 -4 -13 -23 -30 -44 -29 -37 -36 -71 -24 -117 5 -18 14
--23 56 -25 l50 -3 23 -54 c20 -49 56 -83 110 -105 6 -2 -10 -21 -34 -43 l-43
--38 18 -38 c16 -33 22 -37 56 -37 27 0 46 -8 69 -28 l31 -28 -12 -57 -13 -58
-33 -34 34 -35 -33 0 c-24 0 -50 -13 -95 -46 -33 -26 -67 -49 -73 -51 -7 -3
--22 -37 -34 -77 -31 -102 -22 -200 25 -293 30 -60 43 -75 112 -122 51 -36 96
--59 132 -67 30 -7 58 -16 62 -21 4 -4 15 -32 23 -62 l16 -55 -85 -79 -84 -79
-0 -79 0 -79 31 0 c22 0 52 -15 100 -51 66 -49 69 -53 69 -93 0 -35 6 -48 36
--77 20 -18 49 -62 65 -95 l28 -62 76 -25 75 -26 0 50 c0 27 5 49 10 49 6 0 45
--10 86 -22 82 -24 94 -37 94 -101 l1 -32 25 29 26 29 63 -11 c87 -17 100 -15
-145 13 l40 25 65 -17 c59 -16 66 -20 79 -54 15 -36 20 -39 108 -66 90 -28 97
--29 214 -20 l121 9 51 -36 c46 -34 58 -37 136 -43 47 -3 86 -7 86 -9 0 -1 -33
--59 -72 -127 -71 -121 -77 -129 -193 -227 -66 -57 -126 -109 -133 -118 -7 -9
--12 -45 -12 -88 0 -64 -6 -85 -55 -204 -30 -73 -71 -168 -91 -211 -23 -52 -42
--116 -54 -187 l-18 -107 24 -41 23 -41 -44 -112 c-40 -98 -45 -120 -45 -188 0
--55 6 -94 21 -133 11 -30 22 -56 23 -58 2 -1 19 5 39 13 l37 15 0 -45 c0 -25
-4 -45 9 -45 10 0 19 3 106 38 l51 20 57 -24 c51 -22 67 -24 132 -18 66 6 77
-10 106 40 30 31 38 34 90 34 51 0 60 -3 82 -30 l25 -30 119 16 c182 24 167 16
-159 77 -4 28 -9 53 -11 55 -2 2 -20 -5 -42 -16 -70 -36 -78 -36 -95 0 -21 46
--5 87 52 132 37 30 53 36 93 36 41 0 51 -4 76 -32 27 -31 28 -35 16 -65 -12
--29 -12 -32 8 -37 12 -3 41 -6 65 -6 l43 0 -7 35 c-4 22 -2 35 4 35 6 0 17 3
-25 6 11 4 20 -9 32 -48 10 -29 18 -54 19 -55 1 -1 30 6 64 16 l61 19 83 -24
-c46 -13 108 -24 139 -24 54 0 59 -3 189 -95 l133 -95 68 0 c68 0 68 0 110 45
-23 25 45 45 49 45 4 0 13 -11 20 -25 11 -21 21 -25 59 -25 75 0 113 -16 166
--70 l49 -50 -12 -47 c-15 -56 -12 -60 71 -69 31 -4 57 -11 57 -16 0 -5 -7 -25
--15 -45 -8 -20 -13 -38 -11 -40 7 -7 168 24 175 34 3 5 28 41 54 80 45 65 48
-73 39 105 -10 35 -5 138 7 138 3 -1 26 -5 51 -10 28 -5 59 -5 83 1 35 9 43 7
-88 -22 l50 -32 81 22 c44 12 81 21 82 19 1 -2 12 -41 25 -88 12 -47 26 -89 31
--94 13 -13 147 8 208 32 56 23 54 24 66 -30 l6 -28 76 53 c48 33 80 62 86 80
-10 26 13 27 76 27 37 0 72 4 77 8 6 4 24 28 40 54 30 47 31 48 85 49 30 0 152
-6 270 12 240 13 222 6 206 88 -7 34 -5 38 27 58 19 11 37 21 41 21 3 0 6 -16
-6 -35 0 -19 1 -35 3 -35 1 0 34 9 72 20 38 11 77 20 87 20 9 0 28 -20 42 -45
-25 -42 29 -45 71 -45 24 0 65 9 92 21 39 17 59 19 109 14 l62 -6 7 -56 c5 -38
-17 -72 38 -104 35 -52 52 -59 143 -59 l54 0 0 48 c0 41 5 53 30 77 33 32 35
-42 19 98 -12 43 -40 60 -120 71 l-46 7 40 77 40 78 -23 57 c-18 44 -34 63 -70
-88 -40 28 -49 39 -56 78 -8 40 -13 47 -39 51 -30 5 -30 6 -27 60 3 46 10 62
-44 102 37 44 44 48 84 48 38 0 51 6 88 40 40 37 52 42 145 59 109 20 91 9 247
-146 33 29 35 34 41 115 5 74 10 90 36 122 l29 36 71 -39 c119 -66 113 -64 152
--43 20 10 49 36 66 57 l31 38 -23 61 -22 61 24 69 24 69 -32 29 c-18 17 -38
-39 -45 49 -8 11 -29 23 -48 28 -27 7 -36 17 -48 50 -13 33 -22 43 -52 52 -51
-15 -71 14 -85 -6 -11 -15 -16 -14 -57 12 -40 25 -47 35 -57 81 -10 45 -20 60
--61 94 -42 35 -51 39 -74 31 -22 -9 -28 -6 -50 22 -14 18 -31 38 -38 44 -81
-78 -142 149 -140 163 1 8 -18 30 -43 47 -45 33 -92 42 -112 22 -17 -17 -112
-28 -119 57 -4 14 -23 33 -47 46 -43 24 -54 46 -56 110 -1 32 -5 37 -30 43 -26
-6 -31 12 -36 49 -8 49 -12 57 -40 72 -14 8 -20 22 -20 45 -1 31 -5 35 -42 48
--38 14 -73 52 -73 80 0 6 14 17 30 26 24 13 30 22 30 49 0 27 5 35 23 40 23 5
-74 92 62 105 -4 3 -21 11 -38 17 -26 9 -31 16 -29 38 3 26 -4 30 -40 27 -12
--2 -18 5 -18 17 0 13 -18 29 -59 51 -32 17 -66 31 -75 31 -9 0 -16 8 -16 20 0
-12 -14 29 -35 42 -29 19 -34 27 -30 47 10 39 -12 77 -56 96 -40 18 -52 48 -25
-58 9 4 12 14 9 25 -7 29 35 41 54 16 7 -10 13 -24 13 -31 0 -7 8 -13 18 -13
-22 0 72 -62 72 -89 0 -14 7 -21 19 -21 15 0 22 12 31 51 10 41 23 61 69 106
-131 128 140 133 239 133 51 0 73 5 92 20 14 11 32 20 41 20 8 0 19 4 25 10 6
-6 25 -1 54 -20 35 -23 52 -29 75 -24 39 8 85 52 85 80 0 21 6 23 81 30 75 6
-81 9 90 33 6 14 20 36 31 48 16 17 25 20 45 12 28 -10 43 -5 43 17 0 8 5 14
-11 14 7 0 18 8 25 17 12 17 14 17 36 -3 34 -31 69 -36 96 -14 12 10 22 27 22
-37 0 10 4 23 9 29 5 5 11 18 13 28 3 22 88 48 125 39 12 -3 32 2 43 10 16 11
-37 14 75 10 33 -4 55 -1 59 6 4 6 16 11 26 11 14 0 19 6 17 22 -3 32 52 61
-123 64 32 1 68 9 81 17 13 9 43 20 66 26 23 7 50 22 61 35 15 19 32 25 86 31
-56 6 69 11 76 29 10 28 6 33 -34 40 -22 4 -37 14 -41 26 -4 11 -17 23 -31 26
--29 7 -28 5 -7 49 9 19 24 35 32 35 29 0 91 -21 91 -30 0 -13 47 -13 72 1 16
-9 24 7 42 -10 12 -12 29 -21 37 -21 8 0 20 -9 27 -20 10 -16 9 -27 -3 -57 -17
--41 -13 -53 15 -35 37 23 49 16 39 -25 -5 -21 -9 -41 -9 -44 0 -13 108 -59
-137 -59 36 0 63 27 63 63 0 19 11 33 40 54 28 20 40 35 40 53 0 14 10 41 21
-60 12 19 41 102 65 185 48 163 49 187 8 242 -14 18 -24 45 -24 60 2 56 -8 115
--21 128 -8 8 -61 31 -119 53 -119 45 -125 53 -90 123 27 53 21 100 -17 124
--44 29 -73 66 -73 93 0 14 -12 38 -26 53 -20 21 -25 34 -20 53 3 14 13 26 21
-26 8 0 15 4 15 8 0 4 16 25 35 45 36 38 39 48 36 107 -1 19 5 49 13 65 25 47
-20 72 -15 91 -27 13 -30 19 -24 42 3 15 8 58 10 96 l4 68 -60 27 c-46 20 -59
-31 -59 47 0 12 -10 47 -21 78 -22 56 -20 106 3 106 7 0 25 12 40 27 29 27 36
-61 18 79 -7 7 -7 21 1 43 17 49 -1 72 -93 117 -60 29 -92 52 -126 92 -25 29
--62 60 -81 68 -20 8 -52 30 -71 48 -21 21 -50 36 -73 40 -37 7 -38 9 -31 34 5
-15 9 55 9 90 l0 63 75 45 c41 25 87 57 103 72 32 31 51 92 43 140 -4 26 2 46
-25 87 29 51 30 55 15 84 -9 16 -16 42 -16 57 0 45 -51 218 -71 240 -14 15 -19
-35 -19 75 0 33 -6 63 -15 75 -8 10 -15 33 -15 50 0 34 -16 54 -42 54 -25 0
--23 13 4 25 30 13 34 41 9 55 -16 8 -28 7 -53 -6 -61 -31 -165 -8 -273 61 -22
-14 -52 31 -67 37 -41 18 -36 50 15 92 l42 35 -69 66 c-51 48 -63 65 -48 65 11
-0 25 7 32 15 21 25 43 19 36 -10 -5 -20 -3 -25 12 -25 25 0 42 19 42 47 0 15
-6 23 18 23 24 0 62 -28 62 -45 0 -7 10 -15 23 -17 18 -2 22 -9 22 -38 0 -31
--3 -35 -23 -33 -13 2 -32 -2 -42 -7 -18 -10 -19 -8 -14 20 6 28 5 30 -24 30
--40 0 -46 -11 -26 -53 24 -51 13 -81 -33 -93 -42 -10 -55 -37 -26 -52 20 -11
-132 3 148 19 5 5 52 9 105 9 l97 0 0 46 c0 43 -3 48 -56 92 -30 26 -75 66
--100 88 -32 29 -59 44 -87 48 -49 9 -105 52 -128 101 -13 26 -23 35 -42 35
--17 0 -28 -7 -31 -20 -3 -11 -13 -20 -22 -20 -24 0 -33 11 -21 25 23 28 -20
-22 -66 -9 -35 -23 -64 -35 -102 -38 -62 -6 -67 -10 -52 -38 10 -19 9 -21 -11
--18 -15 2 -26 14 -33 36 -6 18 -17 37 -24 41 -8 4 -10 15 -6 26 7 16 3 17 -34
-11 -33 -5 -42 -3 -42 8 0 8 -6 19 -13 23 -8 4 -22 20 -32 36 -11 18 -26 27
--43 27 -14 0 -33 7 -42 15 -9 8 -34 18 -56 23 -33 7 -39 12 -39 34 0 14 -8 35
--18 46 -12 13 -15 22 -8 27 18 11 12 35 -8 35 -50 0 -60 51 -20 95 10 12 22
-35 25 52 3 18 15 40 25 49 11 9 19 28 19 41 0 12 5 23 10 23 6 0 10 9 10 21 0
-15 -5 20 -22 17 -17 -2 -24 -12 -29 -38 -3 -19 -11 -46 -19 -60 -8 -14 -16
--41 -20 -60 -7 -45 -19 -47 -220 -49 -129 -1 -166 3 -218 19 -106 33 -116 30
--166 -48 -24 -37 -54 -88 -66 -112 -18 -39 -33 -51 -97 -85 -44 -23 -92 -58
--113 -82 -35 -40 -41 -43 -88 -43 -27 0 -92 -9 -145 -20 -73 -15 -111 -17
--166 -11 -71 7 -72 7 -111 -26 -31 -26 -43 -47 -56 -95 l-17 -60 -48 6 c-56 8
--111 -11 -128 -42 -15 -28 -14 -32 9 -32 10 0 30 -5 44 -11 21 -10 23 -15 14
--35 -13 -28 -17 -29 -43 -11 -11 7 -35 19 -53 27 -29 11 -34 11 -45 -4 -19
--26 -67 -5 -67 29 0 18 -7 26 -24 31 -14 3 -27 12 -30 20 -7 19 -66 18 -155
--2 -58 -13 -76 -22 -93 -45 -27 -36 -34 -36 -50 -1 -9 19 -27 31 -62 42 -65
-21 -83 52 -53 95 11 16 21 31 22 32 1 1 18 -2 39 -8 36 -10 39 -8 79 28 23 21
-70 56 105 78 l64 40 -6 65 c-3 36 -8 77 -12 91 -4 19 1 34 22 59 l29 33 -61
--6 c-34 -4 -75 -2 -93 3 -26 7 -34 6 -44 -11 -6 -10 -20 -19 -31 -19 -10 0
--41 -16 -67 -35 -69 -49 -112 -48 -163 4 -31 32 -49 41 -99 51 -34 6 -77 20
--97 30 -67 34 -116 42 -176 29 -51 -12 -56 -16 -85 -66 -31 -53 -52 -66 -63
--38 -5 15 12 55 24 55 3 0 11 4 19 9 10 7 11 13 1 30 -9 17 -9 26 0 36 9 11 5
-18 -22 35 -38 24 -80 22 -212 -11 -64 -16 -81 -18 -87 -7 -17 26 -8 37 39 52
-26 9 66 34 90 57 39 37 42 44 42 92 0 46 -3 55 -32 79 l-33 27 27 1 c34 0 44
-16 20 29 -10 6 -26 30 -36 54 -10 28 -26 48 -42 56 -23 10 -26 9 -35 -19 -9
--26 -15 -29 -37 -24 -15 3 -34 15 -43 25 -10 10 -59 34 -110 52 -72 25 -95 38
--99 54 -5 21 -9 20 -85 -27 -81 -49 -94 -50 -95 -6 0 17 -4 16 -32 -11 -18
--17 -48 -34 -66 -38 -30 -6 -37 -3 -65 27 -28 30 -47 38 -142 63 -138 35 -205
-45 -227 33 -12 -6 -26 -4 -42 7 -22 14 -28 15 -52 2 -24 -12 -35 -12 -82 0
--50 13 -56 13 -64 -1 -7 -13 -29 -16 -117 -16 -94 0 -112 3 -135 21 -21 17
--26 29 -26 65 0 39 3 46 28 55 45 18 54 24 50 32 -2 5 5 13 16 19 15 8 16 12
-5 19 -35 22 -64 10 -92 -38z"/>
-        <path d="M3145 9843 c-17 -2 -37 -13 -44 -25 -21 -33 14 -60 85 -66 51 -4 59
--2 74 18 12 16 15 31 11 49 -6 23 -13 26 -52 27 -24 1 -58 -1 -74 -3z"/>
-        <path d="M2992 9757 c-28 -30 -28 -48 1 -75 27 -26 59 -28 78 -6 11 13 10 17
--4 25 -9 6 -25 26 -35 45 l-18 35 -22 -24z"/>
-        <path d="M7960 9741 c-76 -7 -130 -38 -130 -75 0 -13 -9 -31 -20 -41 -29 -27
--16 -31 19 -6 20 14 28 27 24 37 -6 16 12 34 35 34 19 0 14 -25 -8 -45 -11
--10 -20 -29 -20 -42 0 -20 -5 -23 -41 -23 -38 0 -41 -2 -35 -22 3 -13 6 -26 6
--30 0 -5 14 -8 30 -8 17 0 30 -4 30 -10 0 -5 -15 -10 -34 -10 -25 0 -40 -7
--55 -26 -25 -32 -26 -44 -6 -44 8 0 15 -4 15 -10 0 -5 15 -10 34 -10 22 0 36
--6 40 -16 13 -34 6 -41 -44 -48 -46 -6 -50 -9 -50 -34 0 -19 10 -35 35 -55 19
--15 35 -34 35 -42 0 -8 8 -15 18 -15 9 0 50 -14 91 -30 83 -34 94 -36 110 -16
-9 10 9 20 0 39 -14 31 3 67 31 67 11 0 20 7 20 15 0 9 9 15 24 15 14 0 37 5
-52 10 20 8 32 7 50 -5 19 -12 27 -13 44 -3 29 19 50 -4 27 -30 -16 -17 -15
--19 18 -34 35 -15 35 -15 35 9 0 13 12 35 26 48 15 14 22 25 17 25 -5 0 -26
-16 -46 35 -28 27 -44 35 -72 35 -32 0 -38 4 -51 35 -24 58 -19 74 31 96 56 25
-71 62 36 90 -19 16 -35 17 -119 12 l-98 -6 -32 33 c-37 37 -37 49 1 68 30 15
-37 43 10 40 -10 0 -47 -4 -83 -7z"/>
-        <path d="M3325 9562 c-27 -8 -52 -16 -54 -18 -9 -8 31 -54 48 -54 31 0 63 33
-59 61 l-3 25 -50 -14z"/>
-        <path d="M3140 9558 c0 -7 5 -20 10 -28 8 -12 10 -11 10 7 0 12 -4 25 -10 28
--5 3 -10 0 -10 -7z"/>
-        <path d="M5687 9532 c-19 -20 -27 -39 -27 -65 0 -40 22 -59 43 -38 17 17 37
-13 37 -9 0 -10 8 -23 18 -28 19 -10 202 -13 201 -3 0 3 -17 33 -37 65 -35 56
--41 60 -97 76 -114 32 -109 32 -138 2z"/>
-        <path d="M3110 9465 c0 -19 27 -55 42 -55 20 0 23 12 8 41 -9 16 -50 28 -50
-14z"/>
-        </g>
-        </svg>
-        <div class="pins" id="pins"></div>
-      </div>
-      <div class="map-cap">Standorte · Gründungsmitglieder · Anwärter</div>
-      <div class="map-legend">
-        <span><i style="background:var(--gold-deep)"></i>Gründungsmitglied</span>
-        <span><i style="background:var(--ink-faint);opacity:.5"></i>Anwärter</span>
-      </div>
+<main class="home">
+  <div class="wrap home-head">
+    <span class="eyebrow">Gründungsjahrgang 2026 · Kuratierte Aufnahme</span>
+    <h1>Wir sind die deutsche <em>Wirtschaft.</em></h1>
+    <div class="row">
+      <p class="lede">Bewege die Karte, scrolle zum Zoomen. Je tiefer du in eine Region gehst, desto mehr Unternehmen werden sichtbar — von den großen Playern bis zum regionalen Mittelstand.</p>
     </div>
   </div>
-</div>
 
-<!-- ============ MANIFEST ============ -->
-<div class="manifest reveal">
-  <div class="wrap">
-    <p>Kein <span class="strike">Branchenbuch</span>. Keine offene Liste, in die jeder gegen Gebühr rutscht. Sondern eine <em>kuratierte Gründungsklasse</em> — limitiert auf 100 Unternehmen, die für den Standort Deutschland stehen.</p>
-  </div>
-</div>
-
-<!-- ============ PRINZIP ============ -->
-<section id="prinzip">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow">Das Prinzip</span>
-      <h2>Sichtbarkeit, die man sich verdient.</h2>
-      <p>Drei Dinge unterscheiden die Karte von jedem Firmenverzeichnis — und machen die Teilnahme zur Aussage, nicht zum Eintrag.</p>
+  <div class="map-wrap">
+    <svg id="map" role="img" aria-label="Interaktive Wirtschaftskarte Deutschlands"></svg>
+    <div class="map-hint">↕ Scrollen zum Zoomen · Klick auf ein Bundesland · Ziehen zum Verschieben</div>
+    <div class="map-legend2">
+      <b>Sichtbarkeit nach Paket</b>
+      <span class="lg-big"><i></i>Big Player — immer sichtbar</span>
+      <span class="lg-premium"><i></i>Premium — beim Hineinzoomen</span>
+      <span class="lg-business"><i></i>Business — auf Regionsebene</span>
+      <span class="lg-starter"><i></i>Starter — auf Stadtebene</span>
     </div>
-    <div class="cols reveal">
-      <div class="col">
-        <div class="idx">01</div>
-        <h3>Kuratiert</h3>
-        <p>Aufnahme nur auf Antrag und nach Prüfung. Nicht jeder kommt rein — das ist der Punkt. Knappheit schützt den Wert für alle, die dabei sind.</p>
-      </div>
-      <div class="col">
-        <div class="idx">02</div>
-        <h3>Sichtbar</h3>
-        <p>Prominentes Logo am eigenen Standort, ein Profil als Arbeitgeber und Ausbildungsbetrieb, ein physisches Jahres-Siegel fürs Haus. Status, den man sieht.</p>
-      </div>
-      <div class="col">
-        <div class="idx">03</div>
-        <h3>Mit Haltung</h3>
-        <p>Ein fester Anteil jedes Beitrags fließt in Gründerstipendien — in genau eurer Region. Teilnahme heißt: die deutsche Wirtschaft von morgen mitfinanzieren.</p>
-      </div>
+    <div class="map-ctrl">
+      <button id="zin" aria-label="Hineinzoomen">+</button>
+      <button id="zout" aria-label="Herauszoomen">−</button>
+      <button id="zreset" class="reset" aria-label="Ansicht zurücksetzen">⟲</button>
     </div>
   </div>
-</section>
+</main>
 
-<!-- ============ FOUNDING 100 ============ -->
-<section id="founding" class="founding">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow">Das Angebot</span>
-      <h2>Werde eines der 100 Gründungsmitglieder.</h2>
-      <p>Den Gründungsjahrgang 2026 gibt es nur einmal. Wer jetzt dabei ist, bekommt einen Status, der sich später nicht mehr kaufen lässt — und eine Kondition, die später niemand mehr bekommt.</p>
-    </div>
-
-    <div class="founding-grid reveal">
-      <ul class="benefits">
-        <li><span class="k">A</span><span class="v"><b>Founding-Member-Status</b> auf Lebenszeit — sichtbares Sonder-Siegel „Gründungsmitglied 2026", das spätere Mitglieder nie erhalten.</span></li>
-        <li><span class="k">B</span><span class="v"><b>Prominenter Platz auf der Karte</b> mit Logo, Profil, Karriere- & Ausbildungsinfos.</span></li>
-        <li><span class="k">C</span><span class="v"><b>3 Jahre Preisgarantie</b> bei Aufnahme jetzt — spätere Mitglieder zahlen mehr.</span></li>
-        <li><span class="k">D</span><span class="v"><b>Nennung im Launch</b>, im Jahresreport und auf der Gründungs-Gala.</span></li>
-        <li><span class="k">E</span><span class="v"><b>Regionaler Förderbeitrag</b> für Gründerstipendien — transparent ausgewiesen.</span></li>
-      </ul>
-
-      <div class="seal-card">
-        <div class="seal">
-          <svg viewBox="0 0 200 200">
-            <defs>
-              <path id="circlePath" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0"/>
-            </defs>
-            <circle cx="100" cy="100" r="92" fill="none" stroke="rgba(199,168,91,0.35)" stroke-width="1"/>
-            <circle cx="100" cy="100" r="84" fill="none" stroke="rgba(199,168,91,0.6)" stroke-width="1.5"/>
-            <text fill="rgba(244,240,231,0.78)" font-family="Space Mono, monospace" font-size="12.5" letter-spacing="3.4">
-              <textPath href="#circlePath" startOffset="0%">· GRÜNDUNGSMITGLIED · DEUTSCHE WIRTSCHAFTSKARTE </textPath>
-            </text>
-          </svg>
-          <div class="core">
-            <div class="yr">2026</div>
-            <div class="t">Founding</div>
-          </div>
-        </div>
-        <div class="pl">Digital fürs Web — und als physisches Türschild fürs Haus.</div>
-        <div class="lock">Aufnahme jetzt = <b>Preis eingefroren bis 2029.</b></div>
-      </div>
-    </div>
-
-    <!-- Knappheits-Wand -->
-    <div class="wall reveal">
-      <div class="top">
-        <span class="serif" style="font-size:22px;color:var(--paper)">Die Plätze des Gründungsjahrgangs</span>
-        <span class="mono" id="wallCount">— / 100 vergeben</span>
-      </div>
-      <div class="slots" id="slots"></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ STIPENDIEN ============ -->
-<section id="stipendien" class="stipend">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow">Die Haltung</span>
-      <h2>Werbung verkaufen kann jeder. Wir fördern Gründer.</h2>
-      <p>Ein fester Anteil jedes Beitrags fließt in Gründerstipendien — regional gekoppelt. Aus Beiträgen einer Region werden Gründer derselben Region gefördert.</p>
-    </div>
-    <div class="stipend-grid reveal">
-      <div class="counter-box">
-        <div class="amt">10&nbsp;<small>%</small></div>
-        <div class="sub">des Netto-Beitrags → Gründerstipendien</div>
-        <div class="note">Transparenter Förderzähler &amp; halbjährlicher Bericht: eingenommen, zugesagt, ausgezahlt. Vergabe gemeinsam mit Hochschulen und Gründerzentren — nicht von uns allein entschieden.</div>
-      </div>
-      <div>
-        <ul>
-          <li><b>Regionale Töpfe.</b> Bayern fördert Bayern, NRW fördert NRW — sichtbar und nachprüfbar.</li>
-          <li><b>Unabhängige Jury.</b> Gründerzentren &amp; Hochschulen wählen die Stipendiaten aus.</li>
-          <li><b>Voller Nachweis.</b> Jeder geförderte Gründer mit Geschichte im Jahresreport.</li>
-          <li><b>Ehrlich benannt.</b> Ein Förderbeitrag, keine „Spende" — kommerziell sauber und rechtssicher.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ PAKETE ============ -->
-<section id="pakete" style="background:var(--paper-2);border-top:1px solid var(--line)">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow">Die Pakete</span>
-      <h2>Vier Stufen Sichtbarkeit.</h2>
-      <p>Zum Start als Founding-Kondition — mit Preisgarantie über drei Jahre. Jahresbeitrag, netto.</p>
-    </div>
-    <div class="pkgs reveal">
-      <div class="pkg">
-        <div class="nm">Starter</div>
-        <div class="pr">350&nbsp;€ <small>/ Jahr</small></div>
-        <div class="who">Kleinere relevante regionale Betriebe</div>
-        <ul>
-          <li>Logo-Pin (kompakt)</li>
-          <li>Kurzprofil &amp; Website-Link</li>
-          <li>Digitales Badge</li>
-          <li>Förderbeitrag inklusive</li>
-        </ul>
-      </div>
-      <div class="pkg feat">
-        <div class="nm">Business</div>
-        <div class="pr">790&nbsp;€ <small>/ Jahr</small></div>
-        <div class="who">Mittelstand, Ausbildungsbetriebe, regionale Arbeitgeber</div>
-        <ul>
-          <li>Größerer Logo-Pin</li>
-          <li>Ausführliches Profil</li>
-          <li>Karriere- &amp; Ausbildungsinfos</li>
-          <li>Physisches Jahres-Siegel</li>
-          <li>Arbeitgeber-/Azubi-Filter</li>
-        </ul>
-      </div>
-      <div class="pkg">
-        <div class="nm">Premium</div>
-        <div class="pr">2.900&nbsp;€ <small>/ Jahr</small></div>
-        <div class="who">Hidden Champions, bekannte regionale Arbeitgeber</div>
-        <ul>
-          <li>Prominenter Pin, Featured</li>
-          <li>Story- &amp; Imagebereich</li>
-          <li>Report-Erwähnung</li>
-          <li>Premium-Siegel + Gala-Ticket</li>
-          <li>Profilstatistik</li>
-        </ul>
-      </div>
-      <div class="pkg">
-        <div class="nm">Partner</div>
-        <div class="pr">ab 15.000&nbsp;€ <small>/ Jahr</small></div>
-        <div class="who">Sparkassen, Banken, Versorger, Verbände, Konzerne</div>
-        <ul>
-          <li>Region-/Programm-Sponsoring</li>
-          <li>Offizieller Partnerstatus</li>
-          <li>Presse- &amp; PR-Einbindung</li>
-          <li>Eigene Regionaledition möglich</li>
-          <li>Großer Stipendienbeitrag</li>
-        </ul>
-      </div>
-    </div>
-    <p class="pkg-note reveal">Preise der Pilotphase. Endgültige Leistungen werden mit den Gründungsmitgliedern final abgestimmt — deshalb fragen wir jetzt nach eurer Aufnahme, bevor alles in Stein gemeißelt ist.</p>
-  </div>
-</section>
-
-<!-- ============ ABLAUF ============ -->
-<section>
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow">Der Ablauf</span>
-      <h2>So läuft die Aufnahme.</h2>
-    </div>
-    <div class="steps reveal">
-      <div class="step">
-        <div class="n">1</div>
-        <h3>Aufnahme beantragen</h3>
-        <p>Ihr füllt das kurze Formular aus. Unverbindlich — es ist eine Bewerbung, kein Kauf.</p>
-      </div>
-      <div class="step">
-        <div class="n">2</div>
-        <h3>Kurzes Gespräch</h3>
-        <p>Wir prüfen die Passung und zeigen euch in 15 Minuten Karte, Paket und Founding-Kondition.</p>
-      </div>
-      <div class="step">
-        <div class="n">3</div>
-        <h3>Platz sichern</h3>
-        <p>Bei Zusage sichert ihr euren Platz im Gründungsjahrgang — mit Preisgarantie bis 2029.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ FAQ ============ -->
-<section style="padding-top:30px">
-  <div class="wrap">
-    <div class="sec-head reveal" style="margin-bottom:30px">
-      <span class="eyebrow">Häufige Fragen</span>
-      <h2>Ehrlich beantwortet.</h2>
-    </div>
-    <div class="faq reveal">
-      <details>
-        <summary>Bringt mir das garantiert Leads oder Bewerbungen?<span class="pm">+</span></summary>
-        <div class="ans">Nein — und das versprechen wir bewusst nicht. Die Karte ist Sichtbarkeit, Image und Zugehörigkeit als Arbeitgeber, plus ein Recruiting-Kanal in der Region und ein greifbares Siegel. Wer eine reine Lead-Maschine sucht, ist hier falsch.</div>
-      </details>
-      <details>
-        <summary>Was unterscheidet das von einem Branchenbuch?<span class="pm">+</span></summary>
-        <div class="ans">Kuratierung und Knappheit. In ein Branchenbuch kommt jeder, der zahlt. Hier bewirbt man sich, wird geprüft, und die Klasse ist auf 100 Gründungsmitglieder limitiert. Genau das schützt den Wert.</div>
-      </details>
-      <details>
-        <summary>Warum soll ich jetzt schon zusagen, wo noch nicht alles fertig ist?<span class="pm">+</span></summary>
-        <div class="ans">Weil der Gründungsjahrgang 2026 nur einmal existiert — mit Sonderstatus und eingefrorenem Preis bis 2029. Wir bauen die Plattform bewusst gemeinsam mit den ersten 100, statt sie euch fertig vorzusetzen.</div>
-      </details>
-      <details>
-        <summary>Ist das eine Spende? Kann ich sie absetzen?<span class="pm">+</span></summary>
-        <div class="ans">Nein. Es ist ein Förderbeitrag eines kommerziellen Unternehmens, kein gemeinnütziger Spendenabzug. Wir kommunizieren das bewusst sauber — der Beitrag ist eine Betriebsausgabe wie jede andere Marketingleistung.</div>
-      </details>
-    </div>
-  </div>
-</section>
-
-<!-- ============ APPLY ============ -->
-<section id="apply" class="apply">
-  <div class="wrap apply-grid">
-    <div class="reveal">
-      <span class="eyebrow">Aufnahme beantragen</span>
-      <h2>Gehört euer Unternehmen auf die Karte?</h2>
-      <p class="lede">Wir kuratieren gerade den Gründungsjahrgang 2026. Stellt euren Aufnahmeantrag — unverbindlich. Wir melden uns innerhalb von zwei Werktagen.</p>
-      <div class="scarcity" style="border-top:1px solid var(--line)">
-        <div>
-          <div class="num"><span class="serif" style="color:var(--gold-deep)">100</span></div>
-          <div class="lbl" style="margin-top:4px">Plätze. Mehr nicht.</div>
-        </div>
-      </div>
-    </div>
-
-    <div>
-      <form id="applyForm" class="reveal" novalidate>
-        <div class="row2">
-          <div class="field">
-            <label for="f-name">Name</label>
-            <input id="f-name" name="name" type="text" required placeholder="Vor- und Nachname">
-          </div>
-          <div class="field">
-            <label for="f-role">Rolle</label>
-            <input id="f-role" name="role" type="text" placeholder="z. B. Geschäftsführung">
-          </div>
-        </div>
-        <div class="field">
-          <label for="f-company">Unternehmen</label>
-          <input id="f-company" name="company" type="text" required placeholder="Firmenname">
-        </div>
-        <div class="row2">
-          <div class="field">
-            <label for="f-region">Region / Bundesland</label>
-            <input id="f-region" name="region" type="text" placeholder="z. B. Bayern">
-          </div>
-          <div class="field">
-            <label for="f-pkg">Interesse an</label>
-            <select id="f-pkg" name="package">
-              <option>Noch unentschieden</option>
-              <option>Starter</option>
-              <option>Business</option>
-              <option>Premium</option>
-              <option>Partner / Regionaledition</option>
-            </select>
-          </div>
-        </div>
-        <div class="field">
-          <label for="f-email">E-Mail</label>
-          <input id="f-email" name="email" type="email" required placeholder="name@unternehmen.de">
-        </div>
-        <button type="submit" class="btn btn-primary">Aufnahme beantragen <span class="arrow">→</span></button>
-        <p class="form-note">Unverbindlich · keine Zahlung · Antwort in 2 Werktagen</p>
-      </form>
-
-      <div class="success" id="success">
-        <h3>Antrag eingegangen.</h3>
-        <p>Danke — wir prüfen die Passung und melden uns innerhalb von zwei Werktagen bei euch.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ FOOTER ============ -->
-<footer>
-  <div class="wrap">
-    <div class="ft">
-      <div class="brand serif" style="font-size:20px;font-weight:600">Deutsche Wirtschaftskarte</div>
-      <div class="links">
-        <a href="#prinzip">Prinzip</a>
-        <a href="#founding">Founding 100</a>
-        <a href="#stipendien">Förderung</a>
-        <a href="#pakete">Pakete</a>
-        <a href="#apply">Aufnahme</a>
-      </div>
-    </div>
-    <div class="links" style="margin-top:24px;font-size:12px">
-      <a href="#">Impressum</a><a href="#">Datenschutz</a><a href="#">Kontakt</a>
-    </div>
-    <p class="disclaimer">
-      Pilot-/Vorabseite (Validierungsphase). Projektname, Marke, Preise und Leistungen sind vorläufig und werden mit dem Gründungsjahrgang final abgestimmt. Dargestellte Plätze, Mitglieder und Beiratsnamen sind Platzhalter, bis Gründungsmitglieder bestätigt sind. „Förderbeitrag" bezeichnet einen freiwilligen kommerziellen Beitrag, keine steuerlich abzugsfähige Spende und keine Gemeinnützigkeit. Vor öffentlichem Launch sind Werbe-, Wettbewerbs-, Marken- und Datenschutzrecht anwaltlich zu prüfen.
-    </p>
-  </div>
-</footer>
-
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 <script>
-/* =================== KARTE: Pins =================== */
-// Koordinaten im SVG-viewBox 0..760 / 0..1000. "active" = Gründungsmitglied (Platzhalter-Demo).
-// Koordinaten in % der Karten-Box (am Raster der echten Silhouette kalibriert).
-const cities = [
-  {n:"Hamburg",   x:52, y:16, active:true},
-  {n:"Berlin",    x:71, y:27, active:true},
-  {n:"München",   x:58, y:83, active:true},
-  {n:"Köln",      x:20, y:45, active:true},
-  {n:"Stuttgart", x:35, y:67, active:true},
-  {n:"Leipzig",   x:65, y:44, active:false},
-  {n:"Frankfurt", x:33, y:54, active:false},
-  {n:"Hannover",  x:49, y:33, active:false},
-  {n:"Düsseldorf",x:16, y:43, active:false},
-  {n:"Nürnberg",  x:52, y:64, active:false},
-  {n:"Bremen",    x:43, y:23, active:false},
-  {n:"Dresden",   x:77, y:47, active:false},
-  {n:"Dortmund",  x:25, y:40, active:false},
-  {n:"Mannheim",  x:30, y:60, active:false},
+/* ===== Platzhalter-Unternehmen (fiktive Namen, neutrale Monogramme).
+   Echte Logos werden bei Aufnahme eines Unternehmens 1:1 eingesetzt.
+   tier: big | premium | business | starter  →  steuert, ab welchem Zoom sichtbar. ===== */
+const CITY = {
+  Berlin:[13.405,52.52], Hamburg:[9.993,53.551], "München":[11.582,48.135],
+  "Köln":[6.96,50.938], Frankfurt:[8.682,50.111], Stuttgart:[9.182,48.775],
+  "Düsseldorf":[6.773,51.228], Dortmund:[7.466,51.514], Essen:[7.013,51.456],
+  Leipzig:[12.374,51.34], Dresden:[13.738,51.05], Hannover:[9.732,52.375],
+  "Nürnberg":[11.077,49.452], Bremen:[8.801,53.079], Mannheim:[8.466,49.487],
+  Karlsruhe:[8.404,49.007], "Münster":[7.626,51.962], Bonn:[7.098,50.734],
+  Augsburg:[10.898,48.371], Kiel:[10.122,54.323], Magdeburg:[11.628,52.126],
+  Erfurt:[11.029,50.984], Mainz:[8.247,49.992], "Saarbrücken":[6.996,49.234],
+  Rostock:[12.141,54.092], Freiburg:[7.852,47.999], Regensburg:[12.097,49.013],
+  Ingolstadt:[11.426,48.766], Ulm:[9.987,48.401], Wolfsburg:[10.787,52.423],
+  Heilbronn:[9.211,49.142], Bielefeld:[8.533,52.03], Wuppertal:[7.15,51.256],
+  Aachen:[6.084,50.776], Kassel:[9.5,51.312], "Würzburg":[9.93,49.791],
+  Potsdam:[13.064,52.391], "Lübeck":[10.686,53.866], Oldenburg:[8.213,53.144],
+  Jena:[11.586,50.927], Chemnitz:[12.924,50.832]
+};
+const COMPANIES = [
+  {n:"Isarwerk Technologies", city:"München", t:"big"},
+  {n:"Neckar Automotive", city:"Stuttgart", t:"big"},
+  {n:"Spree Digital Group", city:"Berlin", t:"big"},
+  {n:"Hanse Maritime", city:"Hamburg", t:"big"},
+  {n:"Main Finanzgruppe", city:"Frankfurt", t:"big"},
+  {n:"Rheinland Energie", city:"Köln", t:"big"},
+  {n:"Wolfsburger Mobilität", city:"Wolfsburg", t:"big"},
+  {n:"Sachsenwerk Optik", city:"Dresden", t:"big"},
+  {n:"Westfalen Industrie", city:"Dortmund", t:"big"},
+  {n:"Leipziger Logistik", city:"Leipzig", t:"big"},
+  {n:"Alpentech Robotics", city:"Augsburg", t:"premium"},
+  {n:"Badische Präzision", city:"Karlsruhe", t:"premium"},
+  {n:"Donau Maschinenbau", city:"Regensburg", t:"premium"},
+  {n:"Weser Stahl", city:"Bremen", t:"premium"},
+  {n:"Pfalz Pharma", city:"Mannheim", t:"premium"},
+  {n:"Nordlicht Systeme", city:"Kiel", t:"premium"},
+  {n:"Thüringer Glas", city:"Jena", t:"premium"},
+  {n:"Franken Werkzeug", city:"Nürnberg", t:"premium"},
+  {n:"Ruhrtal Anlagen", city:"Essen", t:"premium"},
+  {n:"Schwarzwald Medizintechnik", city:"Freiburg", t:"premium"},
+  {n:"Elbphil Software", city:"Hamburg", t:"premium"},
+  {n:"Rheingold Versicherung", city:"Düsseldorf", t:"premium"},
+  {n:"Mittelhessen Bau", city:"Kassel", t:"business"},
+  {n:"Lipperland Kunststoff", city:"Bielefeld", t:"business"},
+  {n:"Bergisch Galvanik", city:"Wuppertal", t:"business"},
+  {n:"Domstadt Handwerk", city:"Aachen", t:"business"},
+  {n:"Saaletal Elektro", city:"Jena", t:"business"},
+  {n:"Lechfeld Verpackung", city:"Augsburg", t:"business"},
+  {n:"Hafencity Consulting", city:"Hamburg", t:"business"},
+  {n:"Spreeufer Manufaktur", city:"Berlin", t:"business"},
+  {n:"Bodensee Sensorik", city:"Ulm", t:"business"},
+  {n:"Saarschmiede Guss", city:"Saarbrücken", t:"business"},
+  {n:"Ostsee Werft", city:"Rostock", t:"business"},
+  {n:"Magdeburger Antrieb", city:"Magdeburg", t:"business"},
+  {n:"Mainfranken Wein-Tech", city:"Würzburg", t:"business"},
+  {n:"Hellweg Logistik", city:"Dortmund", t:"business"},
+  {n:"Kurpfalz Automation", city:"Heilbronn", t:"business"},
+  {n:"Rheinaue Bau", city:"Bonn", t:"business"},
+  {n:"Schanzen Studio", city:"Hamburg", t:"starter"},
+  {n:"Prenzlauer Werk", city:"Berlin", t:"starter"},
+  {n:"Giesinger Schmiede", city:"München", t:"starter"},
+  {n:"Südstadt Rösterei", city:"Köln", t:"starter"},
+  {n:"Vaihinger Datentechnik", city:"Stuttgart", t:"starter"},
+  {n:"Connewitz Kollektiv", city:"Leipzig", t:"starter"},
+  {n:"Neustadt Feinmechanik", city:"Dresden", t:"starter"},
+  {n:"Linden Holzbau", city:"Hannover", t:"starter"},
+  {n:"Oststadt Optik", city:"Münster", t:"starter"},
+  {n:"Weststadt Solar", city:"Ulm", t:"starter"},
+  {n:"Altstadt Manufaktur", city:"Regensburg", t:"starter"},
+  {n:"Hafen Brauerei", city:"Kiel", t:"starter"},
+  {n:"Innenstadt Design", city:"Erfurt", t:"starter"},
+  {n:"Gartenstadt Technik", city:"Potsdam", t:"starter"}
 ];
-const pinsG = document.getElementById('pins');
-cities.forEach((c,i)=>{
-  const el = document.createElement('div');
-  el.className = 'pin'+(c.active?' active':'');
-  el.style.left = c.x+'%';
-  el.style.top = c.y+'%';
-  el.innerHTML = `${c.active?'<span class="halo"></span>':''}<span class="dot"></span><span class="lbl">${c.n}</span>`;
-  pinsG.appendChild(el);
-  // gestaffeltes Aufleuchten der aktiven Pins
-  if(c.active){
-    const dot = el.querySelector('.dot');
-    dot.style.opacity = 0;
-    setTimeout(()=>{dot.style.opacity='';}, 500 + i*170);
-  }
-});
+function jitter(coord, i){ return [coord[0] + ((i*53)%7-3)*0.018, coord[1] + ((i*37)%7-3)*0.013]; }
+function initials(name){
+  const w = name.replace(/[^A-Za-zÄÖÜäöü ]/g,'').trim().split(/\s+/);
+  if(w.length>=2) return (w[0][0]+w[1][0]).toUpperCase();
+  return name.slice(0,2).toUpperCase();
+}
+const TIER = { big:{th:1,r:13}, premium:{th:1.8,r:11}, business:{th:3.6,r:10}, starter:{th:7.5,r:9} };
+const NAME_AT = 2.6;
 
-/* =================== Hero-Zähler + Bar =================== */
-// PLATZHALTER: an echte Zahl der bestätigten Gründungsmitglieder koppeln.
-const TAKEN = 18;            // <- TODO: echten Wert eintragen / aus Backend laden
-const TOTAL = 100;
+const svg = d3.select("#map");
+const gMain = svg.append("g");
+const gStates = gMain.append("g");
+const gLabels = gMain.append("g");
+const gMk = gMain.append("g");
+let projection, path, statesFC, W, H, currentK = 1;
 
-function animateCount(el, to, dur=1500){
-  const start = performance.now();
-  function tick(now){
-    const p = Math.min(1,(now-start)/dur);
-    const e = 1-Math.pow(1-p,3);
-    el.textContent = Math.round(to*e);
-    if(p<1) requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
+const zoom = d3.zoom().scaleExtent([1, 42])
+  .on("start", ()=>svg.classed("grabbing",true))
+  .on("end", ()=>svg.classed("grabbing",false))
+  .on("zoom", ev=>applyTransform(ev.transform));
+
+function dims(){ const r = document.getElementById("map").getBoundingClientRect(); W=r.width; H=r.height; }
+
+function build(){
+  dims();
+  projection = d3.geoMercator().fitExtent([[24,18],[W-24,H-18]], statesFC);
+  path = d3.geoPath(projection);
+
+  gStates.selectAll("path").data(statesFC.features).join("path")
+    .attr("class","state").attr("d", path)
+    .on("click", (ev,d)=>zoomToFeature(d));
+
+  gLabels.selectAll("text").data(statesFC.features).join("text")
+    .attr("class","state-label").text(d=>d.properties.name)
+    .attr("data-cx", d=>path.centroid(d)[0])
+    .attr("data-cy", d=>path.centroid(d)[1]);
+
+  COMPANIES.forEach((c,i)=>{ c.xy = projection(jitter(CITY[c.city]||CITY.Berlin, i)); });
+
+  const mk = gMk.selectAll("g.mk").data(COMPANIES).join("g").attr("class", d=>"mk t-"+d.t);
+  mk.append("circle").attr("class","mk-halo").attr("r", d=>TIER[d.t].r+4);
+  mk.append("circle").attr("class","mk-ring").attr("r", d=>TIER[d.t].r);
+  mk.append("text").attr("class","mk-mono").attr("font-size", d=>TIER[d.t].r*0.92).text(d=>initials(d.n));
+  mk.append("text").attr("class","mk-nm").attr("y", d=>TIER[d.t].r+13).attr("font-size",11).text(d=>d.n);
+  mk.append("title").text(d=>d.n + " · " + d.city);
+
+  applyTransform(d3.zoomTransform(svg.node()));
 }
 
-/* =================== Knappheits-Wand =================== */
-const slots = document.getElementById('slots');
-for(let i=0;i<TOTAL;i++){
-  const d = document.createElement('div');
-  d.className = 'slot ' + (i<TAKEN ? 'taken' : 'free');
-  slots.appendChild(d);
+function applyTransform(t){
+  currentK = t.k;
+  gMain.attr("transform", t);
+  gMk.selectAll("g.mk")
+    .attr("transform", d=>`translate(${d.xy[0]},${d.xy[1]}) scale(${1/t.k})`)
+    .classed("on", d=> t.k >= TIER[d.t].th);
+  gMk.selectAll(".mk-nm").classed("show", d=> t.k >= TIER[d.t].th && t.k >= NAME_AT);
+  gLabels.selectAll(".state-label")
+    .attr("transform", function(){ return `translate(${this.getAttribute("data-cx")},${this.getAttribute("data-cy")}) scale(${1/t.k})`; })
+    .classed("show", t.k>1.2 && t.k<7);
 }
-document.getElementById('wallCount').textContent = TAKEN + ' / ' + TOTAL + ' vergeben';
 
-/* =================== Reveal on scroll =================== */
-const io = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      e.target.classList.add('in');
-      // Hero-Zähler triggern wenn sichtbar
-      if(e.target.id==='heroNum' || e.target.querySelector?.('#heroNum')){
-        const span = document.querySelector('#heroNum span');
-        if(span && !span.dataset.done){ span.dataset.done=1; animateCount(span, TAKEN); }
-      }
-      io.unobserve(e.target);
-    }
-  });
-},{threshold:0.14});
-const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
-if('IntersectionObserver' in window && !reduce){
-  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-}else{
-  // Fallback: kein Observer / reduzierte Bewegung -> alles sofort sichtbar
-  document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+function zoomToFeature(d){
+  const b = path.bounds(d), dx=b[1][0]-b[0][0], dy=b[1][1]-b[0][1];
+  const x=(b[0][0]+b[1][0])/2, y=(b[0][1]+b[1][1])/2;
+  const k = Math.max(1, Math.min(32, 0.95 / Math.max(dx/W, dy/H)));
+  svg.transition().duration(750)
+    .call(zoom.transform, d3.zoomIdentity.translate(W/2,H/2).scale(k).translate(-x,-y));
 }
-// Sicherheitsnetz: nichts bleibt dauerhaft unsichtbar
-setTimeout(()=>document.querySelectorAll('.reveal:not(.in)').forEach(el=>{
-  const r = el.getBoundingClientRect();
-  if(r.top < innerHeight) el.classList.add('in');
-}), 1200);
 
-// Hero-Bar + Zähler direkt beim Laden starten (above the fold)
-window.addEventListener('load', ()=>{
-  document.getElementById('heroBar').style.width = (TAKEN/TOTAL*100) + '%';
-  const span = document.querySelector('#heroNum span');
-  if(span && !span.dataset.done){ span.dataset.done=1; animateCount(span, TAKEN); }
+d3.json("de-states.geojson").then(fc=>{
+  statesFC = fc;
+  svg.call(zoom);
+  build();
+  let rt; window.addEventListener("resize", ()=>{ clearTimeout(rt); rt=setTimeout(build,200); });
+}).catch(err=>{
+  document.querySelector(".map-wrap").insertAdjacentHTML("beforeend",
+    '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--ink-faint);font-family:monospace">Karte konnte nicht geladen werden.</div>');
+  console.error(err);
 });
 
-/* =================== Formular (Formspree) =================== */
-// ┌─────────────────────────────────────────────────────────────────────┐
-// │ SETUP (2 Min): 1) formspree.io -> kostenloses Konto -> New Form        │
-// │ 2) Form-ID kopieren (sieht aus wie "xayzqwer")                         │
-// │ 3) unten FORM_ID eintragen. Fertig — Leads landen in deinem Postfach.  │
-// │ Alternativen: Tally (Embed), eigener Endpoint -> einfach FORM_ENDPOINT │
-// │ ersetzen. Solange "DEINE_FORM_ID" steht, läuft nur die Demo-Meldung.   │
-// └─────────────────────────────────────────────────────────────────────┘
-const FORM_ID = "DEINE_FORM_ID";                       // <- HIER eintragen
-const FORM_ENDPOINT = "https://formspree.io/f/" + FORM_ID;
-
-const form = document.getElementById('applyForm');
-const submitBtn = form.querySelector('button[type="submit"]');
-form.addEventListener('submit', async (e)=>{
-  e.preventDefault();
-  const name = form.name.value.trim();
-  const company = form.company.value.trim();
-  const email = form.email.value.trim();
-  if(!name || !company || !/.+@.+\..+/.test(email)){
-    alert('Bitte Name, Unternehmen und eine gültige E-Mail angeben.');
-    return;
-  }
-  const data = Object.fromEntries(new FormData(form));
-  data._subject = "Aufnahme-Antrag: " + company;       // Betreff der Mail
-
-  const showSuccess = ()=>{ form.style.display='none'; document.getElementById('success').classList.add('show'); };
-
-  // Demo-Modus, solange keine echte Form-ID hinterlegt ist
-  if(FORM_ID === "DEINE_FORM_ID"){
-    console.log('LEAD (Demo — keine Form-ID hinterlegt):', data);
-    showSuccess();
-    return;
-  }
-
-  // Echter Versand an Formspree
-  submitBtn.disabled = true;
-  const orig = submitBtn.innerHTML;
-  submitBtn.innerHTML = 'Wird gesendet …';
-  try{
-    const res = await fetch(FORM_ENDPOINT, {
-      method:'POST',
-      headers:{ 'Accept':'application/json', 'Content-Type':'application/json' },
-      body: JSON.stringify(data),
-    });
-    if(res.ok){ showSuccess(); }
-    else{ throw new Error('HTTP '+res.status); }
-  }catch(err){
-    console.error('Formversand fehlgeschlagen:', err);
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = orig;
-    alert('Senden hat leider nicht geklappt. Bitte später erneut versuchen oder direkt per E-Mail melden.');
-  }
-});
+d3.select("#zin").on("click", ()=>svg.transition().duration(250).call(zoom.scaleBy,1.6));
+d3.select("#zout").on("click", ()=>svg.transition().duration(250).call(zoom.scaleBy,1/1.6));
+d3.select("#zreset").on("click", ()=>svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity));
 </script>
 </body>
 </html>

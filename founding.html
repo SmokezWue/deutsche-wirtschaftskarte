@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Founding 100 — Deutsche Wirtschaftskarte</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="index.html">Deutsche&nbsp;Wirtschaftskarte <span class="tag">Founding&nbsp;100 · 2026</span></a>
+    <nav class="nav-cta">
+      <div class="tabs">
+        <a href="index.html">Karte</a>
+        <a href="prinzip.html">Prinzip</a>
+        <a href="founding.html" class="active">Founding 100</a>
+        <a href="foerderung.html">Förderung</a>
+        <a href="pakete.html">Pakete</a>
+      </div>
+      <a href="aufnahme.html" class="btn btn-primary">Aufnahme beantragen <span class="arrow">→</span></a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap page">
+    <div class="page-head">
+      <span class="eyebrow">Das Angebot</span>
+      <h1>Werde eines der 100 Gründungsmitglieder.</h1>
+      <p>Den Gründungsjahrgang 2026 gibt es nur einmal. Wer jetzt dabei ist, bekommt einen Status, der sich später nicht mehr kaufen lässt — und eine Kondition, die später niemand mehr bekommt.</p>
+    </div>
+
+    <div class="founding-grid">
+      <ul class="benefits">
+        <li><span class="k">A</span><span class="v"><b>Founding-Member-Status</b> auf Lebenszeit — sichtbares Sonder-Siegel „Gründungsmitglied 2026", das spätere Mitglieder nie erhalten.</span></li>
+        <li><span class="k">B</span><span class="v"><b>Prominenter Platz auf der Karte</b> mit Logo, Profil, Karriere- & Ausbildungsinfos.</span></li>
+        <li><span class="k">C</span><span class="v"><b>3 Jahre Preisgarantie</b> bei Aufnahme jetzt — spätere Mitglieder zahlen mehr.</span></li>
+        <li><span class="k">D</span><span class="v"><b>Nennung im Launch</b>, im Jahresreport und auf der Gründungs-Gala.</span></li>
+        <li><span class="k">E</span><span class="v"><b>Regionaler Förderbeitrag</b> für Gründerstipendien — transparent ausgewiesen.</span></li>
+      </ul>
+
+      <div class="seal-card">
+        <div class="seal">
+          <svg viewBox="0 0 200 200">
+            <defs><path id="cp" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0"/></defs>
+            <circle cx="100" cy="100" r="92" fill="none" stroke="rgba(124,97,31,0.3)" stroke-width="1"/>
+            <circle cx="100" cy="100" r="84" fill="none" stroke="rgba(124,97,31,0.5)" stroke-width="1.5"/>
+            <text fill="rgba(74,70,57,0.85)" font-family="Space Mono, monospace" font-size="12.5" letter-spacing="3.4">
+              <textPath href="#cp" startOffset="0%">· GRÜNDUNGSMITGLIED · DEUTSCHE WIRTSCHAFTSKARTE </textPath>
+            </text>
+          </svg>
+          <div class="core"><div class="yr">2026</div><div class="t">Founding</div></div>
+        </div>
+        <div class="pl">Digital fürs Web — und als physisches Türschild fürs Haus.</div>
+        <div class="lock">Aufnahme jetzt = <b>Preis eingefroren bis 2029.</b></div>
+      </div>
+    </div>
+
+    <div class="wall">
+      <div class="top">
+        <span class="serif" style="font-size:22px">Die Plätze des Gründungsjahrgangs</span>
+        <span class="mono" id="wallCount">— / 100 vergeben</span>
+      </div>
+      <div class="slots" id="slots"></div>
+    </div>
+
+    <div style="margin-top:44px"><a href="aufnahme.html" class="btn btn-primary">Platz im Gründungsjahrgang sichern <span class="arrow">→</span></a></div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="ft">
+      <div class="brand serif" style="font-size:20px;font-weight:700">Deutsche Wirtschaftskarte</div>
+      <div class="links">
+        <a href="index.html">Karte</a><a href="prinzip.html">Prinzip</a><a href="founding.html">Founding 100</a><a href="foerderung.html">Förderung</a><a href="pakete.html">Pakete</a><a href="aufnahme.html">Aufnahme</a>
+      </div>
+    </div>
+    <div class="links" style="margin-top:22px;font-size:12px"><a href="impressum.html">Impressum</a><a href="datenschutz.html">Datenschutz</a></div>
+    <p class="disclaimer">Pilot-/Vorabseite (Validierungsphase). Projektname, Marke, Preise und Leistungen sind vorläufig. Dargestellte Plätze und Mitglieder sind Platzhalter, bis Gründungsmitglieder bestätigt sind.</p>
+  </div>
+</footer>
+
+<script>
+// PLATZHALTER: an echte Zahl bestätigter Gründungsmitglieder koppeln.
+const TAKEN = 18, TOTAL = 100;
+const slots = document.getElementById('slots');
+for(let i=0;i<TOTAL;i++){ const d=document.createElement('div'); d.className='slot '+(i<TAKEN?'taken':'free'); slots.appendChild(d); }
+document.getElementById('wallCount').textContent = TAKEN+' / '+TOTAL+' vergeben';
+</script>
+</body>
+</html>
