@@ -39,7 +39,21 @@
 
   <div class="map-wrap">
     <svg id="map" role="img" aria-label="Interaktive Wirtschaftskarte Deutschlands"></svg>
-    <div class="map-hint">↕ Scrollen zum Zoomen · Klick auf ein Bundesland · Ziehen zum Verschieben</div>
+    <div class="map-search">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+      <input id="search" type="text" list="poi" placeholder="Unternehmen oder Stadt suchen …" autocomplete="off" aria-label="Suche">
+      <datalist id="poi"></datalist>
+    </div>
+
+    <div class="map-popup" id="popup" role="dialog">
+      <span class="pp-close" id="ppClose" aria-label="Schließen">×</span>
+      <div class="pp-tier" id="ppTier"></div>
+      <div class="pp-name" id="ppName"></div>
+      <div class="pp-city" id="ppCity"></div>
+      <a class="pp-cta" href="aufnahme.html">Aufnahme beantragen →</a>
+    </div>
+
+    <div class="map-hint">Scrollen oder Doppelklick zum Zoomen · Klick auf ein Logo für Details</div>
     <div class="map-legend2">
       <b>Sichtbarkeit nach Paket</b>
       <span class="lg-big"><i></i>Big Player — immer sichtbar</span>
@@ -48,8 +62,10 @@
       <span class="lg-starter"><i></i>Starter — auf Stadtebene</span>
     </div>
     <div class="map-ctrl">
-      <button id="zin" aria-label="Hineinzoomen">+</button>
-      <button id="zout" aria-label="Herauszoomen">−</button>
+      <div class="grp">
+        <button id="zin" aria-label="Hineinzoomen">+</button>
+        <button id="zout" aria-label="Herauszoomen">−</button>
+      </div>
       <button id="zreset" class="reset" aria-label="Ansicht zurücksetzen">⟲</button>
     </div>
   </div>
@@ -146,8 +162,20 @@ const gMain = svg.append("g");
 const gShadow = gMain.append("g").attr("transform","translate(0,9)").attr("filter","url(#softblur)");
 const gStates = gMain.append("g");
 const gLabels = gMain.append("g");
+const gCities = gMain.append("g");
 const gMk = gMain.append("g");
-let projection, path, statesFC, W, H, currentK = 1;
+
+/* Städte für die Ortsnamen-Ebene: [name, lng, lat, rang]  (rang 1=Metropole … 4=Kleinstadt)
+   Niedrigerer Rang = erscheint früher beim Zoomen (wie Google Maps). */
+const CITIES = [
+  ["Berlin",13.40,52.52,1],["Hamburg",9.99,53.55,1],["München",11.58,48.14,1],["Köln",6.96,50.94,1],["Frankfurt",8.68,50.11,1],
+  ["Stuttgart",9.18,48.78,2],["Düsseldorf",6.77,51.23,2],["Leipzig",12.37,51.34,2],["Dortmund",7.47,51.51,2],["Essen",7.01,51.46,2],["Dresden",13.74,51.05,2],["Hannover",9.73,52.37,2],["Nürnberg",11.08,49.45,2],["Bremen",8.80,53.08,2],["Duisburg",6.76,51.43,2],
+  ["Bochum",7.22,51.48,3],["Wuppertal",7.15,51.26,3],["Bielefeld",8.53,52.03,3],["Bonn",7.10,50.73,3],["Münster",7.63,51.96,3],["Karlsruhe",8.40,49.01,3],["Mannheim",8.47,49.49,3],["Augsburg",10.90,48.37,3],["Wiesbaden",8.24,50.08,3],["Mönchengladbach",6.43,51.19,3],["Gelsenkirchen",7.10,51.52,3],["Braunschweig",10.52,52.27,3],["Kiel",10.12,54.32,3],["Aachen",6.08,50.78,3],["Magdeburg",11.63,52.13,3],["Freiburg",7.85,48.00,3],["Lübeck",10.69,53.87,3],["Mainz",8.27,49.99,3],["Erfurt",11.03,50.98,3],["Rostock",12.14,54.09,3],["Kassel",9.50,51.31,3],["Potsdam",13.06,52.39,3],["Saarbrücken",6.99,49.23,3],["Oldenburg",8.21,53.14,3],["Osnabrück",8.05,52.28,3],["Krefeld",6.56,51.33,3],
+  ["Würzburg",9.93,49.79,4],["Regensburg",12.10,49.01,4],["Ingolstadt",11.43,48.77,4],["Ulm",9.99,48.40,4],["Heilbronn",9.21,49.14,4],["Wolfsburg",10.79,52.42,4],["Jena",11.59,50.93,4],["Chemnitz",12.92,50.83,4],["Heidelberg",8.67,49.40,4],["Paderborn",8.75,51.72,4],["Göttingen",9.93,51.53,4],["Trier",6.64,49.75,4],["Koblenz",7.59,50.36,4],["Siegen",8.02,50.87,4],["Reutlingen",9.20,48.49,4],["Tübingen",9.06,48.52,4],["Pforzheim",8.70,48.89,4],["Flensburg",9.44,54.78,4],["Bamberg",10.89,49.89,4],["Bayreuth",11.58,49.95,4],["Görlitz",14.99,51.15,4],["Cottbus",14.33,51.76,4],["Schwerin",11.42,53.63,4],["Passau",13.46,48.57,4],["Kempten",10.31,47.73,4],["Fulda",9.68,50.55,4],["Gießen",8.68,50.58,4],["Konstanz",9.18,47.66,4]
+];
+const CITY_TH = {1:1, 2:2.2, 3:3.8, 4:6};
+let projection, path, statesFC, W, H, currentK = 1, selected = null;
+const TIERNAME = {big:"Big Player", premium:"Premium", business:"Business", starter:"Starter"};
 
 const zoom = d3.zoom().scaleExtent([1, 42])
   .on("start", ()=>svg.classed("grabbing",true))
@@ -165,13 +193,18 @@ function build(){
     .attr("class","state-shadow").attr("d", path);
 
   gStates.selectAll("path").data(statesFC.features).join("path")
-    .attr("class","state").attr("d", path)
-    .on("click", (ev,d)=>zoomToFeature(d));
+    .attr("class","state").attr("d", path);
 
   gLabels.selectAll("text").data(statesFC.features).join("text")
     .attr("class","state-label").text(d=>d.properties.name)
     .attr("data-cx", d=>path.centroid(d)[0])
     .attr("data-cy", d=>path.centroid(d)[1]);
+
+  // Ortsnamen-Ebene
+  CITIES.forEach(c=>{ c.xy = projection([c[1],c[2]]); });
+  const ct = gCities.selectAll("g.city").data(CITIES).join("g").attr("class", c=>"city r"+c[3]);
+  ct.append("circle").attr("class","city-dot").attr("r", c=> c[3]<=2?2.6:2);
+  ct.append("text").attr("class","city-nm").attr("x",7).attr("y",4).text(c=>c[0]);
 
   COMPANIES.forEach((c,i)=>{ c.xy = projection(jitter(CITY[c.city]||CITY.Berlin, i)); });
 
@@ -181,6 +214,7 @@ function build(){
   mk.append("text").attr("class","mk-mono").attr("font-size", d=>TIER[d.t].r*0.92).text(d=>initials(d.n));
   mk.append("text").attr("class","mk-nm").attr("y", d=>TIER[d.t].r+13).attr("font-size",11).text(d=>d.n);
   mk.append("title").text(d=>d.n + " · " + d.city);
+  mk.on("click", (ev,d)=>{ ev.stopPropagation(); openPopup(d); });
 
   applyTransform(d3.zoomTransform(svg.node()));
 }
@@ -193,9 +227,13 @@ function applyTransform(t){
     .attr("transform", d=>`translate(${d.xy[0]},${d.xy[1]}) scale(${1/t.k})`)
     .classed("on", d=> t.k >= TIER[d.t].th);
   gMk.selectAll(".mk-nm").classed("show", d=> t.k >= TIER[d.t].th && t.k >= NAME_AT);
+  gCities.selectAll("g.city")
+    .attr("transform", c=>`translate(${c.xy[0]},${c.xy[1]}) scale(${1/t.k})`)
+    .classed("on", c=> t.k >= CITY_TH[c[3]]);
   gLabels.selectAll(".state-label")
     .attr("transform", function(){ return `translate(${this.getAttribute("data-cx")},${this.getAttribute("data-cy")}) scale(${1/t.k})`; })
-    .classed("show", t.k>1.2 && t.k<7);
+    .classed("show", t.k>1.15 && t.k<4.2);
+  if(selected) positionPopup(t);
 }
 
 function zoomToFeature(d){
@@ -224,7 +262,48 @@ d3.json("de-states.geojson").then(fc=>{
 
 d3.select("#zin").on("click", ()=>svg.transition().duration(250).call(zoom.scaleBy,1.6));
 d3.select("#zout").on("click", ()=>svg.transition().duration(250).call(zoom.scaleBy,1/1.6));
-d3.select("#zreset").on("click", ()=>svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity));
+d3.select("#zreset").on("click", ()=>{ closePopup(); svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity); });
+
+/* ===== Info-Popup (Google-Maps-artige Place-Card) ===== */
+const popup = document.getElementById("popup");
+function positionPopup(t){ const s = t.apply(selected.xy); popup.style.left = s[0]+"px"; popup.style.top = s[1]+"px"; }
+function openPopup(d){
+  selected = d;
+  document.getElementById("ppTier").textContent = TIERNAME[d.t];
+  document.getElementById("ppName").textContent = d.n;
+  document.getElementById("ppCity").textContent = d.city;
+  positionPopup(d3.zoomTransform(svg.node()));
+  popup.classList.add("show");
+}
+function closePopup(){ selected = null; popup.classList.remove("show"); }
+document.getElementById("ppClose").addEventListener("click", closePopup);
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") closePopup(); });
+// Hintergrund-Klick schließt Popup (aber nicht beim Verschieben)
+let downXY = null;
+svg.on("pointerdown.pp", ev=>{ downXY=[ev.clientX,ev.clientY]; });
+svg.on("click.pp", ev=>{ if(downXY && Math.hypot(ev.clientX-downXY[0], ev.clientY-downXY[1])<5) closePopup(); });
+
+/* ===== Suche (Unternehmen oder Stadt) ===== */
+function zoomToPoint(lnglat, k, after){
+  const pt = projection(lnglat);
+  const t = d3.zoomIdentity.translate(W/2,H/2).scale(k).translate(-pt[0],-pt[1]);
+  svg.transition().duration(800).ease(d3.easeCubicInOut).call(zoom.transform, t).on("end", ()=>{ if(after) after(); });
+}
+(function buildSearch(){
+  const poi = document.getElementById("poi");
+  COMPANIES.forEach(c=> poi.insertAdjacentHTML("beforeend", `<option value="${c.n}"></option>`));
+  CITIES.forEach(c=> poi.insertAdjacentHTML("beforeend", `<option value="${c[0]}"></option>`));
+  const el = document.getElementById("search");
+  function doSearch(){
+    const q = el.value.trim().toLowerCase(); if(!q) return;
+    const comp = COMPANIES.find(c=>c.n.toLowerCase()===q) || COMPANIES.find(c=>c.n.toLowerCase().includes(q));
+    if(comp){ zoomToPoint(CITY[comp.city], 11, ()=>openPopup(comp)); return; }
+    const city = CITIES.find(c=>c[0].toLowerCase()===q) || CITIES.find(c=>c[0].toLowerCase().includes(q));
+    if(city){ closePopup(); zoomToPoint([city[1],city[2]], 9); }
+  }
+  el.addEventListener("change", doSearch);
+  el.addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.preventDefault(); doSearch(); } });
+})();
 </script>
 </body>
 </html>
