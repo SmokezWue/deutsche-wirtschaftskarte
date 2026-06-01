@@ -188,6 +188,7 @@ function build(){
 function applyTransform(t){
   currentK = t.k;
   gMain.attr("transform", t);
+  document.querySelector(".home").classList.toggle("zoomed", t.k > 1.25);
   gMk.selectAll("g.mk")
     .attr("transform", d=>`translate(${d.xy[0]},${d.xy[1]}) scale(${1/t.k})`)
     .classed("on", d=> t.k >= TIER[d.t].th);
